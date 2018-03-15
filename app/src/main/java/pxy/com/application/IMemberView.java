@@ -7,4 +7,5 @@ import com.pxy.pangjiao.mvp.viewmodel.views.IView;
  */
 
 public interface IMemberView extends IView {
+
 }
