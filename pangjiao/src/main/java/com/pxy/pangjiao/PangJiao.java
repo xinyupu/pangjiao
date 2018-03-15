@@ -13,6 +13,7 @@ import com.pxy.pangjiao.net.NetDefaultConfig;
 import com.pxy.pangjiao.net.NetCore;
 
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 
 /**
@@ -22,7 +23,25 @@ import java.lang.reflect.InvocationTargetException;
 public class PangJiao {
 
     public static void init(Application application) {
-
+        String className = "com.pxy.pangjiao.mvp.MVPDefaultContainer";
+        try {
+            Class<?> aClass = Class.forName(className);
+            try {
+                Method method = aClass.getMethod("createInstance", null);
+                try {
+                    Object invoke = method.invoke(null);
+                    init(application, (IContainerConfig) invoke);
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                } catch (InvocationTargetException e) {
+                    e.printStackTrace();
+                }
+            } catch (NoSuchMethodException e) {
+                e.printStackTrace();
+            }
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void init(Application application, IContainerConfig config) {
@@ -38,6 +57,7 @@ public class PangJiao {
             e.printStackTrace();
         }
     }
+
 
     public static void inject(Activity activity) {
         ViewInject.inject(activity);

@@ -27,4 +27,6 @@ dependencies {
     androidTestImplementation('com.android.support.test.espresso:espresso-core:3.0.1', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
+    compile 'com.github.Ferkerpo.pangjiao:pangjiao:1.1.0'
+    annotationProcessor 'com.github.Ferkerpo.pangjiao:pangjiao:1.1.0'
 }
