@@ -1,7 +1,6 @@
 package com.pxy.pangjiao.mvp.viewmodel.views;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -20,7 +19,7 @@ import java.util.List;
  * Created by pxy on 2018/2/1.
  */
 
-public abstract class PJActivity extends Activity {
+public abstract class PJSupportFragmentActivity extends FragmentActivity {
 
 
     private Handler handler;
