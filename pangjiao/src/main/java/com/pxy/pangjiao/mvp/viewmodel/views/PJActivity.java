@@ -29,7 +29,7 @@ public abstract class PJActivity extends Activity {
 
     @SuppressLint("HandlerLeak")
     @Override
-    protected final void onCreate(@Nullable Bundle savedInstanceState) {
+    protected  void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         presenters = new ArrayList<>();
         PangJiao.register(this);

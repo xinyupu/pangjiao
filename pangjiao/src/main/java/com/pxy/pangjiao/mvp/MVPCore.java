@@ -92,7 +92,7 @@ public class MVPCore {
                 }
             }
         }else {
-            throw new RuntimeException(o.getClass().getName()+"must add @View,In order to use @Autowire or @AutowireProxy ");
+            throw new RuntimeException(o.getClass().getName()+" must add @View,In order to use @Autowire or @AutowireProxy ");
         }
     }
 

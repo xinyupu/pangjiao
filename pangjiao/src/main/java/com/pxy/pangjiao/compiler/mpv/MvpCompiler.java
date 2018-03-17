@@ -62,8 +62,6 @@ public class MvpCompiler {
         parse(Autowire.class, autoWireConfigMaps);
         parse(AutowireProxy.class, autoWireConfigMaps);
 
-        //  initAutoWire();
-        // initAutWireProxy();
         initDataEvent();
     }
 
@@ -156,43 +154,6 @@ public class MvpCompiler {
         }
     }
 
-    private void initAutoWire() {
-        Set<? extends Element> elements = this.env.getElementsAnnotatedWith(Autowire.class);
-        for (Element element : elements) {
-            if (element.getKind() != ElementKind.FIELD) {
-                throw new IllegalArgumentException(String.format("Only FIELD can be annotated with @%s",
-                        Autowire.class.getSimpleName()));
-            }
-            Autowire annotation = element.getAnnotation(Autowire.class);
-            TypeMirror autowireImp = getAutowireImp(annotation);
-            String autoWireClassName = "";
-            if (autowireImp != null) {
-                autoWireClassName = autowireImp.toString();
-            }
-            VariableElement fieldElement = (VariableElement) element;
-            TypeElement typeElement = (TypeElement) element.getEnclosingElement();
-            List<AutoWireCompilerConfig> configLists = autoWireConfigMaps.get(typeElement.asType().toString());
-            String fieldTypeClassName = fieldElement.asType().toString();
-            AutoWireCompilerConfig compilerConfig = new AutoWireCompilerConfig();
-            compilerConfig.setFieldName(element.getSimpleName().toString());
-            compilerConfig.setAutoFieldClassName(element.toString());
-            compilerConfig.setSimpleName(element.getSimpleName());
-            compilerConfig.setFieldName(element.getSimpleName().toString());
-            compilerConfig.setAutoFieldClassName(fieldTypeClassName);
-            if (configLists == null) {
-                configLists = new ArrayList<>();
-                pareAutoWire(fieldTypeClassName, compilerConfig, autoWireClassName);
-                configLists.add(compilerConfig);
-                autoWireConfigMaps.put(typeElement.asType().toString(), configLists);
-            } else {
-                pareAutoWire(fieldTypeClassName, compilerConfig, autoWireClassName);
-                configLists.add(compilerConfig);
-            }
-
-            CompilerFieldConfig beanConfig = new CompilerFieldConfig(element, Autowire.class);
-            configs.add(beanConfig);
-        }
-    }
 
 
     private void pareAutoWire(String fieldTypeClassName, AutoWireCompilerConfig compilerConfig, String autoWireClassName) {
@@ -219,14 +180,6 @@ public class MvpCompiler {
 
     }
 
-
-    private void initAutWireProxy() {
-        Set<? extends Element> elements = this.env.getElementsAnnotatedWith(AutowireProxy.class);
-        for (Element element : elements) {
-            CompilerFieldConfig beanConfig = new CompilerFieldConfig(element, AutowireProxy.class);
-            configs.add(beanConfig);
-        }
-    }
 
     private void initViews() {
         Set<? extends Element> elements = this.env.getElementsAnnotatedWith(Views.class);
