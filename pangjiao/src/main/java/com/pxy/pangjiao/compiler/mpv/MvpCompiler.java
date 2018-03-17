@@ -114,6 +114,13 @@ public class MvpCompiler {
     public <T extends Annotation> void parse(Class<T> clsT, Map<String, List<AutoWireCompilerConfig>> map) {
         Set<? extends Element> elements = this.env.getElementsAnnotatedWith(clsT);
         for (Element element : elements) {
+            TypeElement typeElement = (TypeElement) element.getEnclosingElement();
+            Views viewsAnnotation= typeElement.getAnnotation(Views.class);
+            Service serviceAnnotation = typeElement.getAnnotation(Service.class);
+            Presenter presenterAnnotation = typeElement.getAnnotation(Presenter.class);
+            if (viewsAnnotation==null&&serviceAnnotation==null&&presenterAnnotation==null){
+                throw new NullPointerException("\n"+typeElement.asType().toString()+" must add @Views or @Service or @Presenter");
+            }
             if (element.getKind() != ElementKind.FIELD) {
                 throw new IllegalArgumentException(String.format("Only FIELD can be annotated with @%s",
                         clsT.getSimpleName()));
@@ -130,7 +137,6 @@ public class MvpCompiler {
                 autoWireClassName = autowireImp.toString();
             }
             VariableElement fieldElement = (VariableElement) element;
-            TypeElement typeElement = (TypeElement) element.getEnclosingElement();
             List<AutoWireCompilerConfig> configLists = map.get(typeElement.asType().toString());
             String fieldTypeClassName = fieldElement.asType().toString();
             AutoWireCompilerConfig compilerConfig = new AutoWireCompilerConfig();
@@ -184,6 +190,7 @@ public class MvpCompiler {
     private void initViews() {
         Set<? extends Element> elements = this.env.getElementsAnnotatedWith(Views.class);
         for (Element element : elements) {
+
             CompilerClassConfig compilerClassConfig = new CompilerClassConfig(element, Views.class, mElementUtils);
             String typeName = compilerClassConfig.getType().toString();
             if (viewConfigMaps.get(typeName) == null) {

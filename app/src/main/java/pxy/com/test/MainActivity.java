@@ -10,7 +10,6 @@ import pxy.com.application.IMemberPresent;
 import pxy.com.application.IMainActivityView;
 import pxy.com.application.ITouristService;
 
-
 @Views
 public class MainActivity extends PJAppCompatActivity implements IMainActivityView {
 
