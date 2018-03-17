@@ -12,5 +12,6 @@ public class Type {
     public static final ClassName IViewInject = ClassName.get("com.pxy.pangjiao.mvp.view", "IViewInject");
     public static final ClassName IProvider = ClassName.get("com.pxy.pangjiao.mvp.view.helper", "IProvider");
     public static final ClassName Map = ClassName.get("java.util", "Map");
+    public static final ClassName AutoWireInject = ClassName.get("com.pxy.pangjiao.mvp", "AutoWireInject");
 
 }

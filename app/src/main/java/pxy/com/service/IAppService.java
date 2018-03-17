@@ -5,5 +5,5 @@ package pxy.com.service;
  */
 
 public interface IAppService {
-    void login(String name, String pwd);
+    String login(String name, String pwd);
 }

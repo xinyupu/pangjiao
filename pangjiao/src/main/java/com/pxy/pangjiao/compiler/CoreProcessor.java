@@ -10,8 +10,10 @@ import com.pxy.pangjiao.compiler.mpv.annotation.Autowire;
 import com.pxy.pangjiao.compiler.mpv.annotation.Presenter;
 import com.pxy.pangjiao.compiler.mpv.annotation.Service;
 import com.pxy.pangjiao.compiler.mpv.annotation.Views;
-import com.pxy.pangjiao.compiler.mpv.factory.ContainerProduct;
+import com.pxy.pangjiao.compiler.mpv.factory.AutoWireInjectProduct;
+import com.pxy.pangjiao.compiler.mpv.factory.MVPDefaultContainerProduct;
 import com.pxy.pangjiao.databus.DataEvent;
+import com.squareup.javapoet.JavaFile;
 
 import java.io.IOException;
 import java.util.LinkedHashSet;
@@ -23,8 +25,10 @@ import javax.annotation.processing.Messager;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.Processor;
 import javax.annotation.processing.RoundEnvironment;
+import javax.lang.model.SourceVersion;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
+import javax.tools.Diagnostic;
 
 /**
  * Created by pxy on 2018/3/12.
@@ -36,8 +40,11 @@ public class CoreProcessor extends AbstractProcessor {
     private Filer mFiler;
     private Elements mElementUtils;
     private Messager mMessager;
-    private ContainerProduct product;
+    private MVPDefaultContainerProduct product;
+    private AutoWireInjectProduct injectProduct;
     private InjectCompiler injectCompiler;
+    private JavaFile javaMVConfigFile = null;
+    private JavaFile javaAutoWireConfigFile = null;
 
 
     @Override
@@ -46,23 +53,35 @@ public class CoreProcessor extends AbstractProcessor {
         mFiler = processingEnv.getFiler();
         mElementUtils = processingEnv.getElementUtils();
         mMessager = processingEnv.getMessager();
-        product = new ContainerProduct();
+        product = new MVPDefaultContainerProduct();
+        injectProduct = new AutoWireInjectProduct();
     }
 
     @Override
     public boolean process(Set<? extends TypeElement> set, RoundEnvironment roundEnvironment) {
         injectCompiler = new InjectCompiler(roundEnvironment, mElementUtils);
-
-        MvpCompiler mvpCompiler = new MvpCompiler(roundEnvironment, mElementUtils);
-        product.addAllConfig(mvpCompiler.getConfigs());
+        MvpCompiler mvpCompiler = new MvpCompiler(roundEnvironment, mElementUtils, injectProduct);
         try {
-            product.generateFile().writeTo(mFiler);
+            if (javaMVConfigFile == null) {
+                product.addAllConfig(mvpCompiler.getConfigs());
+                javaMVConfigFile = product.generateFile();
+                javaMVConfigFile.writeTo(mFiler);
+            }
+
+            if (javaAutoWireConfigFile == null) {
+                injectProduct.setAutoWireConfigMaps(mvpCompiler.getAutoWireConfigMaps());
+                injectProduct.setViewConfigMaps(mvpCompiler.getViewConfigMaps());
+                javaAutoWireConfigFile = injectProduct.generateFile();
+                javaAutoWireConfigFile.writeTo(mFiler);
+            }
             for (String key : injectCompiler.getmInitViewProductMap().keySet()) {
                 InitViewProduct initViewProduct = injectCompiler.getmInitViewProductMap().get(key);
                 initViewProduct.generateFile().writeTo(mFiler);
             }
-        } catch (IOException e) {
+
+        } catch (Exception e) {
             e.printStackTrace();
+            error(e.getMessage());
         }
         return false;
     }
@@ -81,4 +100,12 @@ public class CoreProcessor extends AbstractProcessor {
         return types;
     }
 
+    private void error(String msg, Object... args) {
+        mMessager.printMessage(Diagnostic.Kind.ERROR, String.format(msg, args));
+    }
+
+    @Override
+    public SourceVersion getSupportedSourceVersion() {
+        return SourceVersion.latestSupported();
+    }
 }

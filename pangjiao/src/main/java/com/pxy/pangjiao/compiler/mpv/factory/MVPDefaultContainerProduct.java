@@ -1,5 +1,6 @@
 package com.pxy.pangjiao.compiler.mpv.factory;
 
+import com.pxy.pangjiao.compiler.Type;
 import com.pxy.pangjiao.compiler.mpv.annotation.Autowire;
 import com.pxy.pangjiao.compiler.mpv.annotation.AutowireProxy;
 import com.pxy.pangjiao.compiler.mpv.config.CompilerClassConfig;
@@ -30,14 +31,14 @@ import javax.lang.model.type.TypeMirror;
  * Created by pxy on 2018/3/13.
  */
 
-public class ContainerProduct {
+public class MVPDefaultContainerProduct {
 
     private List<IConfig> configs;
     private Map<String, List<IConfig>> autoWireMap;
     private Map<String, List<IConfig>> autoWireProxyMap;
     private Map<String, List<IConfig>> dataEventMap;
 
-    public ContainerProduct() {
+    public MVPDefaultContainerProduct() {
         configs = new ArrayList<>();
         autoWireMap = new HashMap<>();
         autoWireProxyMap = new HashMap<>();
@@ -67,6 +68,9 @@ public class ContainerProduct {
         FieldSpec.Builder dataEventContainer = FieldSpec.builder(ParameterizedTypeName.get(Map.class, String.class, List.class),
                 "dataEventContainer",
                 Modifier.PRIVATE);
+        FieldSpec.Builder viewContainer = FieldSpec.builder(ParameterizedTypeName.get(Map.class, String.class, List.class),
+                "viewContainer",
+                Modifier.PRIVATE);
 
         FieldSpec.Builder instance = FieldSpec.builder(ClassName.get("com.pxy.pangjiao.mvp", "MVPDefaultContainer"), "instance")
                 .addModifiers(Modifier.PRIVATE)
@@ -75,14 +79,14 @@ public class ContainerProduct {
 
         MethodSpec.Builder methodInit = MethodSpec.methodBuilder("init")
                 .addModifiers(Modifier.PRIVATE)
-                .returns(ParameterizedTypeName.get(Map.class, String.class, BeanConfig.class));
+                .returns(TypeName.VOID);
 
 
         diffConfig(methodInit);
-        methodInit.addCode(CodeBlock.builder().add("\n").build());
-        initAutWire(methodInit);
-        initAutWireProxy(methodInit);
-        initDateEvent(methodInit);
+        // methodInit.addCode(CodeBlock.builder().add("\n").build());
+        // initAutWire(methodInit);
+        // initAutWireProxy(methodInit);
+        //  initDateEvent(methodInit);
 
 
         MethodSpec.Builder getClassTypeContainer = MethodSpec.methodBuilder("getClassTypeContainer")
@@ -99,6 +103,15 @@ public class ContainerProduct {
         MethodSpec.Builder getDataEvnetContainer = MethodSpec.methodBuilder("getDataEvnetContainer")
                 .addModifiers(Modifier.PUBLIC)
                 .returns(ParameterizedTypeName.get(Map.class, String.class, List.class));
+        MethodSpec.Builder initAutoWire = MethodSpec.methodBuilder("initAutoWire")
+                .addModifiers(Modifier.PUBLIC)
+                .returns(ParameterizedTypeName.get(Map.class,String.class,List.class))
+                .addStatement("this.viewContainer=new $T(container).autoWire()", ClassName.get("com.pxy.pangjiao.mvp", "AutoWireInject"));
+
+        MethodSpec.Builder getViewContainer = MethodSpec.methodBuilder("getViewContainer")
+                .addModifiers(Modifier.PUBLIC)
+                .returns(ParameterizedTypeName.get(Map.class,String.class,List.class))
+               ;
 
         TypeSpec typeSpec = TypeSpec.classBuilder("MVPDefaultContainer").addModifiers(Modifier.PUBLIC)
                 .addField(mParameterizedField.build())
@@ -106,14 +119,17 @@ public class ContainerProduct {
                 .addField(instance.build())
                 .addField(auotwireProxyContainer.build())
                 .addField(dataEventContainer.build())
+                .addField(viewContainer.build())
                 .addMethod(initCreateMethod().addStatement("return instance").build())
                 .addMethod(initConstruct().build())
                 .addSuperinterface(IContainerConfig.class)
-                .addMethod(methodInit.addStatement("return container").build())
+                .addMethod(methodInit.build())
                 .addMethod(getClassTypeContainer.addStatement("return container").build())
+                .addMethod(initAutoWire.addStatement("return this.viewContainer").build())
                 .addMethod(getAutoWireContainer.addStatement("return auotwireContainer").build())
                 .addMethod(getAutoWireProxyContainer.addStatement("return auotwireProxyContainer").build())
                 .addMethod(getDataEvnetContainer.addStatement("return dataEventContainer").build())
+                .addMethod(getViewContainer.addStatement("return this.viewContainer").build())
                 .build();
 
         return JavaFile.builder("com.pxy.pangjiao.mvp", typeSpec).build();
@@ -237,6 +253,7 @@ public class ContainerProduct {
         constructMethod.addStatement("auotwireProxyContainer=new $T<>()", ClassName.get("java.util", "HashMap"));
         constructMethod.addStatement("dataEventContainer=new $T<>()", ClassName.get("java.util", "HashMap"));
         constructMethod.addStatement("init()");
+        constructMethod.addStatement("initAutoWire()");
         return constructMethod;
     }
 }

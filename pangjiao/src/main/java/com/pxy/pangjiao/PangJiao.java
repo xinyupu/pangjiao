@@ -27,7 +27,7 @@ public class PangJiao {
         try {
             Class<?> aClass = Class.forName(className);
             try {
-                Method method = aClass.getMethod("createInstance", null);
+                Method method = aClass.getMethod("createInstance");
                 try {
                     Object invoke = method.invoke(null);
                     init(application, (IContainerConfig) invoke);

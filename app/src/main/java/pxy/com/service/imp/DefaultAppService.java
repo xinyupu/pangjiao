@@ -5,14 +5,14 @@ import com.pxy.pangjiao.compiler.mpv.annotation.Service;
 import pxy.com.service.IAppService;
 
 /**
- * Created by Administrator on 2018/3/15.
+ * Created by Administrator on 2018/3/16.
  */
-
-public class AppService implements IAppService {
+@Service
+public class DefaultAppService implements IAppService {
 
     @Override
     public String login(String name, String pwd) {
 
-        return "成功";
+        return "失败";
     }
 }

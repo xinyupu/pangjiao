@@ -30,6 +30,9 @@ public class ViewProxy implements InvocationHandler {
                 break;
             }
         }
+        if (interfaceInject==null){
+            throw new RuntimeException(aClass.getName() +"must extends ro implements IView.class");
+        }
         return Proxy.newProxyInstance(this.obj.getClass().getClassLoader(), new Class[]{interfaceInject}, this);
     }
 
