@@ -22,7 +22,7 @@ import java.lang.reflect.Method;
 
 public class PangJiao {
 
-    public static void init(Application application) {
+    public static MVPCore init(Application application) {
         String className = "com.pxy.pangjiao.mvp.MVPDefaultContainer";
         try {
             Class<?> aClass = Class.forName(className);
@@ -42,6 +42,7 @@ public class PangJiao {
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
+        return MVPCore.getInstance();
     }
 
     public static void init(Application application, IContainerConfig config) {
@@ -83,9 +84,7 @@ public class PangJiao {
         MVPCore.getInstance().setLog(log);
     }
 
-    public static void viewDestory(Object o) {
-        // MVPCore.getInstance().removeContainer(o);
-    }
+
 
     public static void register(Object o) {
         try {
