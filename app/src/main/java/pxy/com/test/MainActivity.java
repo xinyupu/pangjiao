@@ -1,6 +1,7 @@
 package pxy.com.test;
 
 
+import com.pxy.pangjiao.compiler.mpv.annotation.Autowire;
 import com.pxy.pangjiao.compiler.mpv.annotation.AutowireProxy;
 import com.pxy.pangjiao.compiler.mpv.annotation.Views;
 import com.pxy.pangjiao.mvp.viewmodel.views.PJAppCompatActivity;

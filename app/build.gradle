@@ -37,9 +37,9 @@ dependencies {
     androidTestImplementation('com.android.support.test.espresso:espresso-core:3.0.1', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.github.xinyupu.pangjiao:pangjiao:1.1.17'
-    annotationProcessor 'com.github.xinyupu.pangjiao:pangjiao:1.1.17'
+    //compile 'com.github.xinyupu.pangjiao:pangjiao:1.1.17'
+    //annotationProcessor 'com.github.xinyupu.pangjiao:pangjiao:1.1.17'
 
-    //implementation project(':pangjiao')
-   //annotationProcessor project(':pangjiao')
+    implementation project(':pangjiao')
+    annotationProcessor project(':pangjiao')
 }

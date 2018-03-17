@@ -104,15 +104,18 @@ public class AutoWireInjectProduct {
         for (String key : viewConfigMaps.keySet()) {
             String variableName=key.replace(".","_");
             List<AutoWireCompilerConfig> configList = autoWireConfigMaps.get(key);
-            autoWire.addStatement("$T<$T> $N=new $T<>()",List.class,ViewConfig.class,variableName,ArrayList.class);
-            for (AutoWireCompilerConfig config:configList){
-              String  fileClassName= config.getAutoFieldClassImpName();
-                if (fileClassName==null){
-                    throw new ClassNotFoundException("\ncause by:\n"+config.getAutoFieldClassName()+" not implemented,or not and @Service @Presenter");
+            if (configList!=null){
+                autoWire.addStatement("$T<$T> $N=new $T<>()",List.class,ViewConfig.class,variableName,ArrayList.class);
+                for (AutoWireCompilerConfig config:configList){
+                    String  fileClassName= config.getAutoFieldClassImpName();
+                    if (fileClassName==null){
+                        throw new ClassNotFoundException("\ncause by:\n"+config.getAutoFieldClassName()+" not implemented,or not and @Service @Presenter");
+                    }
+                    autoWire.addStatement("$N.add(new $T($S,$S))",variableName,ViewConfig.class,config.getFieldName(),fileClassName);
                 }
-                autoWire.addStatement("$N.add(new $T($S,$S))",variableName,ViewConfig.class,config.getFieldName(),fileClassName);
+                autoWire.addStatement("this.viewContainer.put($S,$N)", key, variableName);
             }
-            autoWire.addStatement("this.viewContainer.put($S,$N)", key, variableName);
+
         }
         for (String key : autoWireConfigMaps.keySet()) {
             if (viewConfigMaps.get(key)==null){

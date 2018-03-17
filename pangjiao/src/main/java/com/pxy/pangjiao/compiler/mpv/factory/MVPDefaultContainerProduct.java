@@ -187,40 +187,11 @@ public class MVPDefaultContainerProduct {
         }
     }
 
-    private void initAutWire(MethodSpec.Builder methodInit) {
-        for (String keyOwner : autoWireMap.keySet()) {
-            List<IConfig> iConfigs = autoWireMap.get(keyOwner);
-            String variableName = null;
-            for (IConfig config : iConfigs) {
-                TypeMirror fieldType = config.getFieldType();
-                String fieldTypeClassName = fieldType.toString();
-                variableName = config.getOwnerType().toString().replace(".", "_");
-                methodInit.addStatement("$T $N=new $T<>()", ParameterizedTypeName.get(List.class, AutoWireConfig.class), variableName, ArrayList.class);
-                methodInit.addStatement("$N.add(new AutoWireConfig($S,$S))", variableName, fieldTypeClassName, config.getFieldName().toString());
-            }
-            methodInit.addStatement("auotwireContainer.put($S,$L)", keyOwner, variableName);
-            methodInit.addCode(CodeBlock.builder().add("\n").build());
-        }
-    }
 
-    private void initAutWireProxy(MethodSpec.Builder methodInit) {
-        for (String keyOwner : autoWireProxyMap.keySet()) {
-            List<IConfig> iConfigs = autoWireProxyMap.get(keyOwner);
-            String variableName = "";
-            for (IConfig config : iConfigs) {
-                TypeMirror fieldType = config.getFieldType();
-                String fieldTypeClassName = fieldType.toString();
-                String oldName = config.getOwnerType().toString().replace(".", "_");
-                if (!variableName.equals(oldName)) {
-                    variableName = oldName;
-                    methodInit.addStatement("$T $N=new $T<>()", ParameterizedTypeName.get(List.class, AutoWireConfig.class), variableName, ArrayList.class);
-                }
-                methodInit.addStatement("$N.add(new AutoWireConfig($S,$S))", variableName, fieldTypeClassName, config.getFieldName().toString());
-            }
-            methodInit.addStatement("auotwireProxyContainer.put($S,$L)", keyOwner, variableName);
-            methodInit.addCode(CodeBlock.builder().add("\n").build());
-        }
-    }
+
+
+
+
 
     private void initDateEvent(MethodSpec.Builder methodInit) {
         for (String keyOwner : dataEventMap.keySet()) {
