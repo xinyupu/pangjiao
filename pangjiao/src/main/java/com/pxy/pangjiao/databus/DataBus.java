@@ -61,6 +61,7 @@ public class DataBus {
                 try {
                     Method method = o.getClass().getMethod(config.getMethodName(), Object.class);
                     observableMap.put(o, method);
+                    dataObservable.notifyChanged();
                     PangJiao.info("DataBus register()数量:" + observableMap.size());
                 } catch (NoSuchMethodException e) {
                     e.printStackTrace();
