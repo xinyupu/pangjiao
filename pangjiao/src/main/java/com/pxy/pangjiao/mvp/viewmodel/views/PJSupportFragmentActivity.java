@@ -70,7 +70,6 @@ public abstract class PJSupportFragmentActivity extends FragmentActivity {
         for (IPresenter presenter : presenters) {
             presenter.onDestroy();
         }
-        PangJiao.viewDestory(this);
         DataBus.getDefault().destroy(this);
     }
 

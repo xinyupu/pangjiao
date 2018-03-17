@@ -71,7 +71,6 @@ public abstract class PJAppCompatActivity extends AppCompatActivity {
         for (IPresenter presenter : presenters) {
             presenter.onDestroy();
         }
-        PangJiao.viewDestory(this);
         DataBus.getDefault().destroy(this);
     }
 

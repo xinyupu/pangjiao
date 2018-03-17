@@ -71,7 +71,6 @@ public abstract class PJActivity extends Activity {
         for (IPresenter presenter : presenters) {
             presenter.onDestroy();
         }
-        PangJiao.viewDestory(this);
         DataBus.getDefault().destroy(this);
     }
 

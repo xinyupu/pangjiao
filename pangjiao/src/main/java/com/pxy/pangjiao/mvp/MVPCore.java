@@ -120,6 +120,7 @@ public class MVPCore {
 
     private void autoWireNew(Object o) throws ClassNotFoundException, NoSuchFieldException, IllegalAccessException {
          this.containerConfig.autoWireFactory(o);
+
     }
 
 
