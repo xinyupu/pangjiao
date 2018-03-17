@@ -88,7 +88,7 @@ public class MVPDefaultContainerProduct {
         // methodInit.addCode(CodeBlock.builder().add("\n").build());
         // initAutWire(methodInit);
         // initAutWireProxy(methodInit);
-        //  initDateEvent(methodInit);
+         initDateEvent(methodInit);
 
 
         MethodSpec.Builder getClassTypeContainer = MethodSpec.methodBuilder("getClassTypeContainer")
