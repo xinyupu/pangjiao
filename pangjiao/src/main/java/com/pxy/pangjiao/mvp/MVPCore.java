@@ -72,6 +72,7 @@ public class MVPCore {
         this.containerConfig = config;
         this.beanContainer = this.containerConfig.getClassTypeContainer();
         this.viewContainer=this.containerConfig.getViewContainer();
+        this.dataEventContainer=this.containerConfig.getDataEvnetContainer();
     }
 
 
