@@ -14,7 +14,7 @@ import pxy.com.service.imp.DefaultAppService;
  * Created by Administrator on 2018/3/15.
  */
 
-@Presenter
+@Presenter(singleton = false)
 public class MemberPresent implements IMemberPresent {
 
     @Autowire

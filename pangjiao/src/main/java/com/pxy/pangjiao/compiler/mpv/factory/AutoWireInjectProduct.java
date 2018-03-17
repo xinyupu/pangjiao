@@ -63,6 +63,43 @@ public class AutoWireInjectProduct {
         MethodSpec.Builder autoWire = MethodSpec.methodBuilder("autoWire")
                 .addModifiers(Modifier.PUBLIC)
                 .returns(ParameterizedTypeName.get(Map.class,String.class,List.class));
+        MethodSpec.Builder getAutoWireInject=MethodSpec.methodBuilder("getAutoWireInject")
+                .returns(ClassName.get("com.pxy.pangjiao.mvp","AutoWireInject"))
+                .addStatement("return this")
+                .addModifiers(Modifier.PUBLIC);
+
+        MethodSpec.Builder autoWireFactory=MethodSpec.methodBuilder("autoWireFactory")
+                .addModifiers(Modifier.PUBLIC)
+                .addParameter(Object.class,"o")
+                .addStatement("String className=o.getClass().getName()")
+                .returns(Object.class);
+        for (String key : autoWireConfigMaps.keySet()) {
+
+            if (viewConfigMaps.get(key)==null){
+                List<AutoWireCompilerConfig> configList = autoWireConfigMaps.get(key);
+                if (configList != null && configList.size() > 0) {
+                    String typeName = key.substring(key.lastIndexOf(".") + 1);
+                    String typePackageName=key.replace("."+typeName,"");
+                    autoWireFactory.beginControlFlow("if(o.getClass().getName().equals($S))",key);
+                    for (AutoWireCompilerConfig config : configList) {
+                        String fileClassName = config.getAutoFieldClassImpName();
+                        if (fileClassName==null){
+                            throw new ClassNotFoundException("\ncause by:\n"+config.getAutoFieldClassName()+" not implemented,or not and @Service @Presenter");
+                        }
+                        String autoFieldClassName = config.getAutoFieldClassName();
+                        String autoFieldTypeName=autoFieldClassName.substring(autoFieldClassName.lastIndexOf(".") + 1);
+                        String autoFieldTypePackageName=autoFieldClassName.replace("."+autoFieldTypeName,"");
+                        autoWireFactory.addStatement("(($T)o).$N=($T)container.get($S).getObject()",
+                                ClassName.get(typePackageName, typeName),
+                                config.getFieldName(),
+                                ClassName.get(autoFieldTypePackageName, autoFieldTypeName),
+                                config.getAutoFieldClassImpName()
+                        );
+                    }
+                    autoWireFactory.endControlFlow();
+                }
+            }
+        }
 
         for (String key : viewConfigMaps.keySet()) {
             String variableName=key.replace(".","_");
@@ -110,8 +147,10 @@ public class AutoWireInjectProduct {
         TypeSpec typeSpec = TypeSpec.classBuilder("AutoWireInject")
                 .addField(container.build())
                 .addField(viewContainer.build())
+                .addMethod(getAutoWireInject.build())
                 .addMethod(autoWire.addStatement("return this.viewContainer").build())
                 .addMethod(constructorMethod.build())
+                .addMethod(autoWireFactory.addStatement("return o").build())
                 .addModifiers(Modifier.PUBLIC).build();
 
         return JavaFile.builder("com.pxy.pangjiao.mvp", typeSpec).build();

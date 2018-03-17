@@ -76,6 +76,8 @@ public class MVPDefaultContainerProduct {
                 .addModifiers(Modifier.PRIVATE)
                 .addModifiers(Modifier.STATIC);
 
+        FieldSpec.Builder autoWireInject = FieldSpec.builder(ClassName.get("com.pxy.pangjiao.mvp", "AutoWireInject"), "autoWireInject")
+                .addModifiers(Modifier.PRIVATE);
 
         MethodSpec.Builder methodInit = MethodSpec.methodBuilder("init")
                 .addModifiers(Modifier.PRIVATE)
@@ -106,12 +108,18 @@ public class MVPDefaultContainerProduct {
         MethodSpec.Builder initAutoWire = MethodSpec.methodBuilder("initAutoWire")
                 .addModifiers(Modifier.PUBLIC)
                 .returns(ParameterizedTypeName.get(Map.class,String.class,List.class))
-                .addStatement("this.viewContainer=new $T(container).autoWire()", ClassName.get("com.pxy.pangjiao.mvp", "AutoWireInject"));
+                .addStatement("autoWireInject=new AutoWireInject(container)")
+                .addStatement("this.viewContainer=autoWireInject.autoWire()");
 
         MethodSpec.Builder getViewContainer = MethodSpec.methodBuilder("getViewContainer")
                 .addModifiers(Modifier.PUBLIC)
-                .returns(ParameterizedTypeName.get(Map.class,String.class,List.class))
-               ;
+                .returns(ParameterizedTypeName.get(Map.class,String.class,List.class));
+
+        MethodSpec.Builder   autoWireFactory=MethodSpec.methodBuilder("autoWireFactory")
+        .addModifiers(Modifier.PUBLIC)
+        .addParameter(Object.class,"o")
+        .returns(Object.class)
+        .addStatement("return autoWireInject.autoWireFactory(o)");
 
         TypeSpec typeSpec = TypeSpec.classBuilder("MVPDefaultContainer").addModifiers(Modifier.PUBLIC)
                 .addField(mParameterizedField.build())
@@ -120,6 +128,7 @@ public class MVPDefaultContainerProduct {
                 .addField(auotwireProxyContainer.build())
                 .addField(dataEventContainer.build())
                 .addField(viewContainer.build())
+                .addField(autoWireInject.build())
                 .addMethod(initCreateMethod().addStatement("return instance").build())
                 .addMethod(initConstruct().build())
                 .addSuperinterface(IContainerConfig.class)
@@ -130,6 +139,7 @@ public class MVPDefaultContainerProduct {
                 .addMethod(getAutoWireProxyContainer.addStatement("return auotwireProxyContainer").build())
                 .addMethod(getDataEvnetContainer.addStatement("return dataEventContainer").build())
                 .addMethod(getViewContainer.addStatement("return this.viewContainer").build())
+                .addMethod(autoWireFactory.build())
                 .build();
 
         return JavaFile.builder("com.pxy.pangjiao.mvp", typeSpec).build();

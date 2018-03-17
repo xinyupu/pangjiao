@@ -5,11 +5,8 @@ import android.os.Handler;
 
 import com.pxy.pangjiao.PangJiao;
 import com.pxy.pangjiao.common.ExpUtil;
-import com.pxy.pangjiao.compiler.mpv.annotation.Autowire;
-import com.pxy.pangjiao.compiler.mpv.annotation.AutowireProxy;
 import com.pxy.pangjiao.log.IPLog;
 import com.pxy.pangjiao.log.PLog;
-import com.pxy.pangjiao.mvp.ioccontainer.AutoWireConfig;
 import com.pxy.pangjiao.mvp.ioccontainer.BeanConfig;
 import com.pxy.pangjiao.mvp.ioccontainer.IContainerConfig;
 import com.pxy.pangjiao.mvp.ioccontainer.ViewConfig;
@@ -104,7 +101,7 @@ public class MVPCore {
             proxy = new PresentProxy().getProxy(beanConfig.getObject());
         } else {
             Object o1 = beanConfig.getObject().getClass().newInstance();
-            autoWire(o1);
+            autoWireNew(o1);
             proxy = new PresentProxy().getProxy(o1);
         }
         Field declaredField = o.getClass().getDeclaredField(fieldName);
@@ -120,23 +117,8 @@ public class MVPCore {
         }
     }
 
-    public void autoWire(Object o) throws ClassNotFoundException, NoSuchFieldException, IllegalAccessException {
-        List<AutoWireConfig> list = autoWireContainer.get(o.getClass().getName());
-        if (list != null) {
-            for (AutoWireConfig configAuto : list) {
-                String autoFieldClassName = configAuto.getFieldClassName();
-                String autoFieldName = configAuto.getFieldName();
-                Class<?> autoFieldClass = Class.forName(autoFieldClassName);
-                for (String beanClassName : this.beanContainer.keySet()) {
-                    Class<?> beanClass = Class.forName(beanClassName);
-                    if (autoFieldClass.isAssignableFrom(beanClass)) {
-                        Field declaredField = this.beanContainer.get(o.getClass().getName()).getObject().getClass().getDeclaredField(autoFieldName);
-                        declaredField.setAccessible(true);
-                        declaredField.set(o, this.beanContainer.get(beanClass.getName()).getObject());
-                    }
-                }
-            }
-        }
+    private void autoWireNew(Object o) throws ClassNotFoundException, NoSuchFieldException, IllegalAccessException {
+         this.containerConfig.autoWireFactory(o);
     }
 
 

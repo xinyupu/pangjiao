@@ -17,4 +17,6 @@ public interface IContainerConfig {
 
     Map<String, List> getDataEvnetContainer();
     Map<String, List> getViewContainer();
+
+    Object autoWireFactory(Object o);
 }
