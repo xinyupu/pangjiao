@@ -4,27 +4,30 @@ import android.accounts.NetworkErrorException;
 
 import com.pxy.pangjiao.common.ExpUtil;
 import com.pxy.pangjiao.PangJiao;
+import com.pxy.pangjiao.mvp.MVPCore;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Created by pxy on 2018/2/1.
  */
 
 public class HttpEngine {
-
-
-    public static final File file = new File("");
 
 
     public static String post(String url, String content, NetDefaultConfig config) {
@@ -70,9 +73,19 @@ public class HttpEngine {
             }
         } catch (IOException e) {
             e.printStackTrace();
+            MVPCore.getInstance().postMain(() -> {
+                if (NetCore.getHttpManger().getListener() != null) {
+                    NetCore.getHttpManger().getListener().onError(e);
+                }
+            });
             PangJiao.error(ExpUtil.getStackTrace(e));
         } catch (NetworkErrorException e) {
             e.printStackTrace();
+            MVPCore.getInstance().postMain(() -> {
+                if (NetCore.getHttpManger().getListener() != null) {
+                    NetCore.getHttpManger().getListener().onError(e);
+                }
+            });
             PangJiao.error(ExpUtil.getStackTrace(e));
         } finally {
             conn.disconnect();// 关闭连接
@@ -83,7 +96,6 @@ public class HttpEngine {
     public static String get(String url, NetDefaultConfig config) {
         HttpURLConnection conn = null;
         try {
-            // 利用string url构建URL对象
             PangJiao.info("请求--GET:API" + url);
             URL mURL = new URL(url);
             conn = (HttpURLConnection) mURL.openConnection();
@@ -104,6 +116,11 @@ public class HttpEngine {
             }
         } catch (Exception e) {
             e.printStackTrace();
+            MVPCore.getInstance().postMain(() -> {
+                if (NetCore.getHttpManger().getListener() != null) {
+                    NetCore.getHttpManger().getListener().onError(e);
+                }
+            });
             PangJiao.error(ExpUtil.getStackTrace(e));
         } finally {
             if (conn != null) {
@@ -113,54 +130,66 @@ public class HttpEngine {
         return null;
     }
 
-    public static void uploadFile(File uploadFile, String updateName, String api) {
-        String end = "\r\n";
-        String twoHyphens = "--";
-        String boundary = "*****";
+    public void upLodeImage(String path, String fileName, byte[] files) {
+        HttpURLConnection conn = null;
+        Map<String, byte[]> fileMap = new HashMap<>();
+        fileMap.put("upFile", files);
+        //分隔符
+        String finalSplit = "---------------------------DmzWebApi";
         try {
-            URL url = new URL(api);
-            HttpURLConnection con = (HttpURLConnection) url.openConnection();
-            /* 允许Input、Output，不使用Cache */
-            con.setDoInput(true);
-            con.setDoOutput(true);
-            con.setUseCaches(false);
-            /* 设置传送的method=POST */
-            con.setRequestMethod("POST");
-            /* setRequestProperty */
-            con.setRequestProperty("Connection", "Keep-Alive");
-            con.setRequestProperty("Charset", "UTF-8");
-            con.setRequestProperty("Content-Type",
-                    "multipart/form-data;boundary=" + boundary);
-            /* 设置DataOutputStream */
-            DataOutputStream ds = new DataOutputStream(con.getOutputStream());
-            ds.writeBytes(twoHyphens + boundary + end);
-            ds.writeBytes("Content-Disposition: form-data; "
-                    + "name=\"file1\";filename=\"" + updateName + "\"" + end);
-            ds.writeBytes(end);
-            /* 取得文件的FileInputStream */
-            FileInputStream fStream = new FileInputStream(uploadFile);
-            /* 设置每次写入1024bytes */
-            int bufferSize = 1024;
-            byte[] buffer = new byte[bufferSize];
-            int length = -1;
-            /* 从文件读取数据至缓冲区 */
-            while ((length = fStream.read(buffer)) != -1) {
-                /* 将资料写入DataOutputStream中 */
-                ds.write(buffer, 0, length);
+            URL url = new URL(path);
+            conn = (HttpURLConnection) url.openConnection();
+            conn.setConnectTimeout(5000);
+            conn.setReadTimeout(5000);
+            conn.setDoOutput(true);
+            conn.setDoInput(true);
+            conn.setUseCaches(false);
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Connection", "Keep-Alive");
+            conn.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows; U; Windows NT 6.1; zh-CN; rv:1.9.2.6)");
+            conn.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + finalSplit);
+            OutputStream out = new DataOutputStream(conn.getOutputStream());
+            if (fileMap.size() > 0) {
+                Iterator<Map.Entry<String, byte[]>> inter = fileMap.entrySet().iterator();
+                while (inter.hasNext()) {
+                    Map.Entry<String, byte[]> entry = inter.next();
+                    String inputName = entry.getKey();
+                    byte[] inputValue = entry.getValue();
+                    if (inputValue == null) {
+                        continue;
+                    }
+                    String contentType = "image/jpeg";
+                    StringBuffer strBuf = new StringBuffer();
+                    strBuf.append("\r\n").append("--").append(finalSplit).append("\r\n");
+                    strBuf.append("Content-Disposition: form-data; name=\"").append(inputName).append("\"; filename=\"").append(fileName + ".jpg").append("\"\r\n");
+                    strBuf.append("Content-Type:").append(contentType).append("\r\n\r\n");
+                    out.write(strBuf.toString().getBytes());
+                    DataInputStream in = new DataInputStream(new ByteArrayInputStream(inputValue));
+                    int bytes;
+                    byte[] bufferOut = new byte[1024];
+                    while ((bytes = in.read(bufferOut)) != -1) {
+                        out.write(bufferOut, 0, bytes);
+                    }
+                    in.close();
+                }
             }
-            ds.writeBytes(end);
-            ds.writeBytes(twoHyphens + boundary + twoHyphens + end);
-            fStream.close();
-            ds.flush();
-            InputStream is = con.getInputStream();
-            int ch;
-            StringBuffer b = new StringBuffer();
-            while ((ch = is.read()) != -1) {
-                b.append((char) ch);
+            byte[] endData = ("\r\n--" + finalSplit + "--\r\n").getBytes();
+            out.write(endData);
+            out.flush();
+            out.close();
+            StringBuffer strBuf = new StringBuffer();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                strBuf.append(line).append("\n");
             }
-            ds.close();
+            reader.close();
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            if (conn != null) {
+                conn.disconnect();
+            }
         }
     }
 

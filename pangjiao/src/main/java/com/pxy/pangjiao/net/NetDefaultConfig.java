@@ -6,9 +6,9 @@ package com.pxy.pangjiao.net;
 
 public class NetDefaultConfig {
 
-    private int connectTimeOut = 5000;
-    private int readTimeOut = 5000;
-    private String host = "";
+    protected int connectTimeOut = 5000;
+    protected int readTimeOut = 5000;
+    protected String host = "";
 
     public NetDefaultConfig setConnectTimeOut(int connectTimeOut) {
         this.connectTimeOut = connectTimeOut;

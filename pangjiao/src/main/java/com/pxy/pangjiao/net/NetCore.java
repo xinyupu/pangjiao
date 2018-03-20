@@ -3,6 +3,7 @@ package com.pxy.pangjiao.net;
 
 import com.google.gson.Gson;
 import com.pxy.pangjiao.common.Utils;
+import com.pxy.pangjiao.net.helper.INetListener;
 import com.pxy.pangjiao.net.helper.NetHelper;
 
 import java.lang.reflect.ParameterizedType;
@@ -17,6 +18,7 @@ public class NetCore {
     private static NetCore httpManager;
 
     private NetDefaultConfig config;
+    private INetListener listener;
 
     public static NetCore init(NetDefaultConfig config) {
         if (httpManager == null) {
@@ -74,4 +76,11 @@ public class NetCore {
         return null;
     }
 
+    private void setNetListener(INetListener listener){
+        this.listener=listener;
+    }
+
+    public INetListener getListener() {
+        return listener;
+    }
 }

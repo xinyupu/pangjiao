@@ -73,7 +73,7 @@ public class PresentProxy implements InvocationHandler {
                 }
             }
         } else {
-            MVPCore.getInstance().getExecutorService().execute(() -> {
+            MVPCore.getInstance().getThreadPool().execute(() -> {
                 try {
                     if (!method.isAnnotationPresent(HideLoading.class) && MVPCore.getInstance().getLoadingView() != null) {
                         MVPCore.getInstance().getLoadingView().show();

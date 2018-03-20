@@ -7,6 +7,7 @@ import com.pxy.pangjiao.PangJiao;
 import com.pxy.pangjiao.common.ExpUtil;
 import com.pxy.pangjiao.log.IPLog;
 import com.pxy.pangjiao.log.PLog;
+import com.pxy.pangjiao.mvp.ThreadPool.ThreadPool;
 import com.pxy.pangjiao.mvp.ioccontainer.BeanConfig;
 import com.pxy.pangjiao.mvp.ioccontainer.IContainerConfig;
 import com.pxy.pangjiao.mvp.ioccontainer.ViewConfig;
@@ -41,15 +42,15 @@ public class MVPCore {
     public IPLog log;
     private Handler mainHandler;
     private long mainThreadId;
-    private ExecutorService executorService;
     private ILoading loading;
+    private ThreadPool threadPool;
 
 
-    public static MVPCore createInstance(Application application) {
+    public static MVPCore createInstance(Application application,ThreadPoolDefaultConfig config) {
         if (_instance == null) {
             synchronized (MVPCore.class) {
                 if (_instance == null) {
-                    _instance = new MVPCore();
+                    _instance = new MVPCore(config);
                 }
             }
         }
@@ -57,7 +58,7 @@ public class MVPCore {
     }
 
 
-    private MVPCore() {
+    private MVPCore(ThreadPoolDefaultConfig config) {
         beanContainer = new HashMap<>();
         superClass = new ArrayList<>();
         autoWireProxyContainer = new HashMap<>();
@@ -65,7 +66,7 @@ public class MVPCore {
         this.log = new PLog();
         mainThreadId = Thread.currentThread().getId();
         mainHandler = new Handler();
-        executorService = Executors.newCachedThreadPool();
+        threadPool=ThreadPool.getInstance(config);
     }
 
     public void initContainer(IContainerConfig config) throws ClassNotFoundException, NoSuchFieldException, IllegalAccessException {
@@ -74,6 +75,7 @@ public class MVPCore {
         this.viewContainer=this.containerConfig.getViewContainer();
         this.dataEventContainer=this.containerConfig.getDataEvnetContainer();
     }
+
 
 
 
@@ -185,11 +187,13 @@ public class MVPCore {
         mainHandler.post(runnable);
     }
 
-    public ExecutorService getExecutorService() {
-        return executorService;
-    }
 
     public Map<String, List> getDataEventContainer() {
         return dataEventContainer;
+    }
+
+
+    public ThreadPool getThreadPool() {
+        return threadPool;
     }
 }

@@ -7,6 +7,7 @@ import android.view.View;
 import com.pxy.pangjiao.db.sql.PJDB;
 import com.pxy.pangjiao.log.IPLog;
 import com.pxy.pangjiao.mvp.MVPCore;
+import com.pxy.pangjiao.mvp.ThreadPoolDefaultConfig;
 import com.pxy.pangjiao.mvp.ioccontainer.IContainerConfig;
 import com.pxy.pangjiao.mvp.view.ViewInject;
 import com.pxy.pangjiao.net.NetDefaultConfig;
@@ -30,7 +31,7 @@ public class PangJiao {
                 Method method = aClass.getMethod("createInstance");
                 try {
                     Object invoke = method.invoke(null);
-                    init(application, (IContainerConfig) invoke);
+                    init(application, (IContainerConfig) invoke, new ThreadPoolDefaultConfig(), new NetDefaultConfig());
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();
                 } catch (InvocationTargetException e) {
@@ -45,9 +46,38 @@ public class PangJiao {
         return MVPCore.getInstance();
     }
 
-    public static void init(Application application, IContainerConfig config) {
+
+    public static MVPCore init(Application application, NetDefaultConfig config) {
+        init(application, new ThreadPoolDefaultConfig(), config);
+        return MVPCore.getInstance();
+    }
+
+    public static MVPCore init(Application application, ThreadPoolDefaultConfig config) {
+        init(application, config, new NetDefaultConfig());
+        return MVPCore.getInstance();
+    }
+
+    public static void init(Application application, ThreadPoolDefaultConfig poolDefaultConfig, NetDefaultConfig config) {
         try {
-            MVPCore.createInstance(application).initContainer(config);
+            String className = "com.pxy.pangjiao.mvp.MVPDefaultContainer";
+            Class<?> aClass = Class.forName(className);
+            Method method = aClass.getMethod("createInstance");
+            Object invoke = method.invoke(null);
+            init(application, (IContainerConfig) invoke, poolDefaultConfig, config);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void init(Application application, IContainerConfig config, ThreadPoolDefaultConfig poolDefaultConfig, NetDefaultConfig netDefaultConfig) {
+        try {
+            MVPCore.createInstance(application, poolDefaultConfig).initContainer(config);
             NetCore.init(new NetDefaultConfig());
             PJDB.init(application);
         } catch (ClassNotFoundException e) {
@@ -83,7 +113,6 @@ public class PangJiao {
     public static void setLog(IPLog log) {
         MVPCore.getInstance().setLog(log);
     }
-
 
 
     public static void register(Object o) {
