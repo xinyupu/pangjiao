@@ -2,6 +2,7 @@ package com.pxy.pangjiao.db.sql;
 
 import android.annotation.SuppressLint;
 import android.app.Application;
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
@@ -40,7 +41,7 @@ public class PJDB {
     @SuppressLint("WrongConstant")
     private PJDB(Application context) {
         this.context = context;
-        db = context.openOrCreateDatabase("pj.db", 1, null);
+        db = context.openOrCreateDatabase("pj.db", Context.MODE_PRIVATE, null);
     }
 
     public void update(String sql) {
