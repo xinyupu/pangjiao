@@ -9,4 +9,5 @@ import com.pxy.pangjiao.mvp.presenter.IPresenter;
 public interface ITouristService extends IPresenter {
 
     void payCash(double money);
+    void active();
 }

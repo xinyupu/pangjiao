@@ -2,8 +2,10 @@ package com.pxy.pangjiao.compiler.mpv;
 
 import com.pxy.pangjiao.compiler.mpv.annotation.Autowire;
 import com.pxy.pangjiao.compiler.mpv.annotation.AutowireProxy;
+import com.pxy.pangjiao.compiler.mpv.annotation.DataField;
 import com.pxy.pangjiao.compiler.mpv.annotation.Presenter;
 import com.pxy.pangjiao.compiler.mpv.annotation.Service;
+import com.pxy.pangjiao.compiler.mpv.annotation.ViewData;
 import com.pxy.pangjiao.compiler.mpv.annotation.Views;
 import com.pxy.pangjiao.compiler.mpv.config.AutoWireCompilerConfig;
 import com.pxy.pangjiao.compiler.mpv.config.CompilerClassConfig;
@@ -11,6 +13,7 @@ import com.pxy.pangjiao.compiler.mpv.config.CompilerFieldConfig;
 import com.pxy.pangjiao.compiler.mpv.config.CompilerMethodConfig;
 import com.pxy.pangjiao.compiler.mpv.config.IConfig;
 import com.pxy.pangjiao.compiler.mpv.config.InterfaceConfig;
+import com.pxy.pangjiao.compiler.mpv.config.ViewDataConfig;
 import com.pxy.pangjiao.compiler.mpv.config.ViewsConfig;
 import com.pxy.pangjiao.compiler.mpv.factory.AutoWireInjectProduct;
 import com.pxy.pangjiao.databus.DataEvent;
@@ -59,6 +62,7 @@ public class MvpCompiler {
         initService();
         initPresent();
         initViews();
+        initViewData();
         parse(Autowire.class, autoWireConfigMaps);
         parse(AutowireProxy.class, autoWireConfigMaps);
 
@@ -88,6 +92,24 @@ public class MvpCompiler {
         }
     }
 
+
+    private void initViewData(){
+        Set<? extends Element> elements = this.env.getElementsAnnotatedWith(ViewData.class);
+        for (Element element:elements){
+            if (element.getKind() == ElementKind.CLASS){
+                TypeElement typeElement = (TypeElement) element;
+                ViewData annotation = typeElement.getAnnotation(ViewData.class);
+              //  TypeMirror viewDataClass = getViewDataClass(annotation);
+               // Class[] value = annotation.value();
+              //  new ViewDataConfig(env,element,value);
+            }else {
+                throw new RuntimeException("@ViewData must on Type");
+            }
+        }
+    }
+
+
+
     private void initPresent() {
         Set<? extends Element> elements = this.env.getElementsAnnotatedWith(Presenter.class);
         for (Element element : elements) {
@@ -111,7 +133,7 @@ public class MvpCompiler {
         }
     }
 
-    public <T extends Annotation> void parse(Class<T> clsT, Map<String, List<AutoWireCompilerConfig>> map) {
+    private <T extends Annotation> void parse(Class<T> clsT, Map<String, List<AutoWireCompilerConfig>> map) {
         Set<? extends Element> elements = this.env.getElementsAnnotatedWith(clsT);
         for (Element element : elements) {
             TypeElement typeElement = (TypeElement) element.getEnclosingElement();
@@ -187,6 +209,8 @@ public class MvpCompiler {
     }
 
 
+
+
     private void initViews() {
         Set<? extends Element> elements = this.env.getElementsAnnotatedWith(Views.class);
         for (Element element : elements) {
@@ -243,4 +267,8 @@ public class MvpCompiler {
         }
         return null;
     }
+
+
+
+
 }

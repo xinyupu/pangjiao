@@ -1,5 +1,6 @@
 package com.pxy.pangjiao.mvp.viewmodel;
 
+import com.pxy.pangjiao.compiler.mpv.annotation.DataSource;
 import com.pxy.pangjiao.mvp.MVPCore;
 import com.pxy.pangjiao.mvp.viewmodel.model.IViewModel;
 
@@ -17,5 +18,9 @@ public class ViewModel implements IViewModel {
     @Override
     public void show(Object o) {
         MVPCore.getInstance().show(this, o);
+    }
+
+    public void showMvvp(Object source){
+
     }
 }

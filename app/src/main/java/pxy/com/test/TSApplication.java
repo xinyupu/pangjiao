@@ -3,6 +3,7 @@ package pxy.com.test;
 import android.app.Application;
 
 import com.pxy.pangjiao.PangJiao;
+import com.pxy.pangjiao.net.NetDefaultConfig;
 
 /**
  * Created by Administrator on 2018/3/15.
