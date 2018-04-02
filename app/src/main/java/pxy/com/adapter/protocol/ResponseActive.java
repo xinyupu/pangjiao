@@ -1,6 +1,7 @@
 package pxy.com.adapter.protocol;
 
 import com.pxy.pangjiao.compiler.mpv.annotation.DataSource;
+import com.pxy.pangjiao.mvp.viewmodel.model.ModelField;
 
 /**
  * Created by Administrator on 2018/3/29.
@@ -13,6 +14,8 @@ public class ResponseActive {
 
     private boolean issuccess;
     private String msg;
+
+    @ModelField(fieldName = "name")
     private String data;
 
     public boolean isIssuccess() {

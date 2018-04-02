@@ -1,5 +1,6 @@
 package pxy.com.application.imp;
 
+import com.pxy.pangjiao.common.Mapper;
 import com.pxy.pangjiao.compiler.mpv.annotation.Autowire;
 import com.pxy.pangjiao.compiler.mpv.annotation.Presenter;
 
@@ -36,11 +37,11 @@ public class TouristService implements ITouristService {
     }
 
     @Override
-    public void active() {
+    public void active(User user) {
         RequestActive active=new RequestActive();
         active.setActiveCode("123456");
         ResponseActive response = active.execute();
-
+        Mapper.mapMVVP(response,user);
     }
 
 

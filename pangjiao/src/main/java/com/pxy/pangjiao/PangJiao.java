@@ -75,10 +75,10 @@ public class PangJiao {
         }
     }
 
-    public static void init(Application application, IContainerConfig config, ThreadPoolDefaultConfig poolDefaultConfig, NetDefaultConfig netDefaultConfig) {
+    public static void init(Application application, IContainerConfig config, ThreadPoolDefaultConfig poolDefaultConfig, NetDefaultConfig netConfig) {
         try {
             MVPCore.createInstance(application, poolDefaultConfig).initContainer(config);
-            NetCore.init(new NetDefaultConfig());
+            NetCore.init(netConfig);
             PJDB.init(application);
         } catch (ClassNotFoundException e) {
             e.printStackTrace();

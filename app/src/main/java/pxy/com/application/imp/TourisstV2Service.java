@@ -10,6 +10,7 @@ import pxy.com.application.ITouristService;
 import pxy.com.service.IAppService;
 import pxy.com.service.imp.AppService;
 import pxy.com.service.imp.DefaultAppService;
+import pxy.com.test.User;
 
 /**
  * Created by Administrator on 2018/3/29.
@@ -31,7 +32,7 @@ public class TourisstV2Service implements ITouristService {
     }
 
     @Override
-    public void active() {
+    public void active(User user) {
         RequestActive active=new RequestActive();
         active.setActiveCode("123456");
         ResponseActive response = active.execute();
