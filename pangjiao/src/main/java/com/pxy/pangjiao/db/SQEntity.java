@@ -51,7 +51,7 @@ public class SQEntity {
         try {
             int tableId = DBHelper.getTableId(o);
             List<?> search = search(o.getClass());
-            if (search.size() == 0) {
+            if (search.size() == 0||tableId==0) {
                 String insert = DBHelper.insert(o);
                 PJDB.getDB().save(insert);
             } else {
