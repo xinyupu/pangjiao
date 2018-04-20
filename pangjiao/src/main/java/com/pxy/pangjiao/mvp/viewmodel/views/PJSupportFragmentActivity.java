@@ -32,6 +32,7 @@ public abstract class PJSupportFragmentActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         presenters = new ArrayList<>();
         PangJiao.register(this);
+        beforeSetContentView();
         setContentView(initView());
         PangJiao.inject(this);
         initData();
@@ -50,6 +51,9 @@ public abstract class PJSupportFragmentActivity extends FragmentActivity {
         };
     }
 
+    public void beforeSetContentView(){
+
+    }
     public abstract int initView();
 
     public abstract void initData();

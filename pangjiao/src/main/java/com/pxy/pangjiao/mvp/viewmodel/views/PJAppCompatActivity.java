@@ -33,6 +33,7 @@ public abstract class PJAppCompatActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         presenters = new ArrayList<>();
         PangJiao.register(this);
+        beforeSetContentView();
         setContentView(initView());
         PangJiao.inject(this);
         initData();
@@ -49,6 +50,10 @@ public abstract class PJAppCompatActivity extends AppCompatActivity {
                 }
             }
         };
+    }
+
+    public void beforeSetContentView(){
+
     }
 
     public abstract int initView();

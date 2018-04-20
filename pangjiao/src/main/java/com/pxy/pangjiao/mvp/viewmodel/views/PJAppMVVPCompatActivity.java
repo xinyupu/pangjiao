@@ -50,6 +50,9 @@ public abstract class PJAppMVVPCompatActivity extends AppCompatActivity {
         };
     }
 
+    public void beforeSetContentView(){
+
+    }
     public abstract void initView();
 
     public abstract void initData();

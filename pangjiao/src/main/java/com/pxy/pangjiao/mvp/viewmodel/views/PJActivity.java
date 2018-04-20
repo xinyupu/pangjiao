@@ -33,6 +33,7 @@ public abstract class PJActivity extends Activity {
         super.onCreate(savedInstanceState);
         presenters = new ArrayList<>();
         PangJiao.register(this);
+        beforeSetContentView();
         setContentView(initView());
         PangJiao.inject(this);
         initData();
@@ -49,6 +50,11 @@ public abstract class PJActivity extends Activity {
                 }
             }
         };
+    }
+
+
+    public void beforeSetContentView(){
+
     }
 
     public abstract int initView();
