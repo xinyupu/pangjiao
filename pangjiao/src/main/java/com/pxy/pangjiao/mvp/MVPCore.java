@@ -111,11 +111,16 @@ public class MVPCore {
         Method build = proxy.getClass().getMethod("build", Object.class);
         Object viewProxy = new ViewProxy().getProxy(o);
         build.invoke(proxy, viewProxy);
-        Field presenters = o.getClass().getField("presenters");
-        if (presenters != null) {
-            Method add = presenters.getType().getMethod("add", Object.class);
-            add.invoke(presenters.get(o), proxy);
+        try{
+            Field presenters = o.getClass().getField("presenters");
+            if (presenters != null) {
+                Method add = presenters.getType().getMethod("add", Object.class);
+                add.invoke(presenters.get(o), proxy);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
         }
+
     }
 
     private void autoWireNew(Object o) throws ClassNotFoundException, NoSuchFieldException, IllegalAccessException {
