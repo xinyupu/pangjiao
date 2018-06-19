@@ -36,9 +36,10 @@ dependencies {
 
     implementation 'com.android.support:appcompat-v7:26.1.0'
 
-    //compile 'com.github.xinyupu.pangjiao:pangjiao:1.1.17'
-    //annotationProcessor 'com.github.xinyupu.pangjiao:pangjiao:1.1.17'
+
+   // implementation 'com.github.xinyupu:pangjiao:1.1.29'
+    //annotationProcessor 'com.github.xinyupu.pangjiao:pangjiao:1.1.29'
 
     implementation project(':pangjiao')
-    annotationProcessor project(':pangjiao')
+     annotationProcessor project(':pangjiao')
 }
