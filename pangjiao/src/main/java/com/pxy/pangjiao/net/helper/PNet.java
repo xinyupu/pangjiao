@@ -14,6 +14,12 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface PNet {
     String method() default "POST";
+
     String host() default "";
+
     String api() default "";
+
+    int connectTimeOut() default 5000;
+
+    int readTimeOut() default 5000;
 }

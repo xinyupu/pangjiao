@@ -6,17 +6,17 @@ package com.pxy.pangjiao.net;
 
 public class NetDefaultConfig {
 
-    protected int connectTimeOut = 5000;
-    protected int readTimeOut = 5000;
+    protected int globeConnectTimeOut = 5000;
+    protected int globeReadTimeOut = 5000;
     protected String host = "";
 
-    public NetDefaultConfig setConnectTimeOut(int connectTimeOut) {
-        this.connectTimeOut = connectTimeOut;
+    public NetDefaultConfig setGlobeConnectTimeOut(int globeConnectTimeOut) {
+        this.globeConnectTimeOut = globeConnectTimeOut;
         return this;
     }
 
-    public NetDefaultConfig setReadTimeOut(int readTimeOut) {
-        this.readTimeOut = readTimeOut;
+    public NetDefaultConfig setGlobeReadTimeOut(int globeReadTimeOut) {
+        this.globeReadTimeOut = globeReadTimeOut;
         return this;
     }
 
@@ -25,12 +25,12 @@ public class NetDefaultConfig {
         return this;
     }
 
-    public int getConnectTimeOut() {
-        return connectTimeOut;
+    public int getGlobeConnectTimeOut() {
+        return globeConnectTimeOut;
     }
 
-    public int getReadTimeOut() {
-        return readTimeOut;
+    public int getGlobeReadTimeOut() {
+        return globeReadTimeOut;
     }
 
     public String getHost() {

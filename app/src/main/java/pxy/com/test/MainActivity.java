@@ -16,7 +16,6 @@ import pxy.com.application.ITouristService;
 import pxy.com.application.imp.TourisstV2Service;
 import pxy.com.application.imp.TouristService;
 import pxy.com.model.UserView;
-import pxy.com.test.databinding.ActivityMainBinding;
 
 @Views
 public class MainActivity extends PJAppMVVPCompatActivity implements IMainActivityView {
@@ -29,18 +28,15 @@ public class MainActivity extends PJAppMVVPCompatActivity implements IMainActivi
     public ITouristService touristService;
 
 
-    private ActivityMainBinding binding;
     private User user;
 
     @Override
     public void initView() {
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
     }
 
     @Override
     public void initData() {
-        user=new User();
-        binding.setUser(user);
+
     }
 
 

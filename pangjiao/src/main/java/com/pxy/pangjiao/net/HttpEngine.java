@@ -52,8 +52,8 @@ public class HttpEngine {
             e.printStackTrace();
             PangJiao.error(ExpUtil.getStackTrace(e));
         }
-        conn.setConnectTimeout(config.getConnectTimeOut());// 设置连接网络超时为10秒
-        conn.setReadTimeout(config.getReadTimeOut());// 设置读取超时为5秒
+        conn.setConnectTimeout(config.getGlobeConnectTimeOut());// 设置连接网络超时为10秒
+        conn.setReadTimeout(config.getGlobeReadTimeOut());// 设置读取超时为5秒
         conn.setDoOutput(true);// 设置此方法,允许向服务器输出内容
         conn.setRequestProperty("Content-Type", "application/json");
         try {
@@ -101,8 +101,8 @@ public class HttpEngine {
             conn = (HttpURLConnection) mURL.openConnection();
 
             conn.setRequestMethod("GET");
-            conn.setReadTimeout(config.getReadTimeOut());
-            conn.setConnectTimeout(config.getConnectTimeOut());
+            conn.setReadTimeout(config.getGlobeReadTimeOut());
+            conn.setConnectTimeout(config.getGlobeConnectTimeOut());
             conn.connect();
 
             int responseCode = conn.getResponseCode();

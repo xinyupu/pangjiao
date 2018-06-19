@@ -11,8 +11,8 @@ import java.lang.reflect.Field;
 
 public class NetHelper {
 
-    public static final String Get = "GET";
-    public static final String Post = "POST";
+    public static final String GET = "GET";
+    public static final String POST = "POST";
 
     public static Configs parse(Object o) {
         if (!o.getClass().isAnnotationPresent(PNet.class))
@@ -24,17 +24,18 @@ public class NetHelper {
         String method = annotation.method();
         String api = annotation.api();
         String host = annotation.host();
-
-        return new Configs(method, api, host);
+        int connectTimeOut = annotation.connectTimeOut();
+        int readTimeOut = annotation.readTimeOut();
+        return new Configs(method, api, host,connectTimeOut,readTimeOut);
     }
 
     public static String parseRequestContent(String method, NetModel model) {
         Field[] declaredFields = model.getClass().getDeclaredFields();
         String request = "";
         StringBuilder datas = null;
-        if (method.equals(Post)) {
+        if (method.equals(POST)) {
             return new Gson().toJson(model);
-        } else if (method.equals(Get)) {
+        } else if (method.equals(GET)) {
             datas = new StringBuilder("?");
             for (Field field : declaredFields) {
                 if (!field.isAccessible()) field.setAccessible(true);
@@ -53,17 +54,37 @@ public class NetHelper {
     }
 
 
-
     public static class Configs {
 
         private String method;
         private String api;
         private String host;
+        private int connectTimeOut;
+        private int readTimeOut;
 
-        public Configs(String method, String api, String host) {
+        public Configs(String method, String api, String host, int connectTimeOut, int readTimeOut) {
             this.method = method;
             this.api = api;
             this.host = host;
+            this.connectTimeOut = connectTimeOut;
+            this.readTimeOut = readTimeOut;
+        }
+
+
+        public int getConnectTimeOut() {
+            return connectTimeOut;
+        }
+
+        public void setConnectTimeOut(int connectTimeOut) {
+            this.connectTimeOut = connectTimeOut;
+        }
+
+        public int getReadTimeOut() {
+            return readTimeOut;
+        }
+
+        public void setReadTimeOut(int readTimeOut) {
+            this.readTimeOut = readTimeOut;
         }
 
         public String getMethod() {

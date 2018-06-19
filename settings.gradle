@@ -1,1 +1,1 @@
-include ':app', ':tlib','pangjiao'
+include ':app','pangjiao'

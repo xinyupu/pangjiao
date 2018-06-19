@@ -5,7 +5,6 @@
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/pangjiao/pangjiao.iml" filepath="$PROJECT_DIR$/pangjiao/pangjiao.iml" />
       <module fileurl="file://$PROJECT_DIR$/test.iml" filepath="$PROJECT_DIR$/test.iml" />
-      <module fileurl="file://$PROJECT_DIR$/tlib/tlib.iml" filepath="$PROJECT_DIR$/tlib/tlib.iml" />
     </modules>
   </component>
 </project>
