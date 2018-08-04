@@ -202,6 +202,58 @@ public class MainActivity extends PJAppCompatActivity implements IMemberView {
 }
 
 ``` 
+
+### net module ###
+```java
+
+@Net(api = "http://www.baidu.com", connectTimeOut = 10000)
+public class RequestActive extends NetModel<ResponseActive> {
+
+    private String ActiveCode;
+
+    public String getActiveCode() {
+        return ActiveCode;
+    }
+
+    public void setActiveCode(String ActiveCode) {
+        this.ActiveCode = ActiveCode;
+    }
+}
+
+
+public class ResponseActive extends ResponseBase {
+
+    private boolean issuccess;
+    private String msg;
+    private String data;
+
+    public boolean isIssuccess() {
+        return issuccess;
+    }
+
+    public void setIssuccess(boolean issuccess) {
+        this.issuccess = issuccess;
+    }
+
+    public String getMsg() {
+        return msg;
+    }
+
+    public void setMsg(String msg) {
+        this.msg = msg;
+    }
+
+    public String getData() {
+        return data;
+    }
+
+    public void setData(String data) {
+        this.data = data;
+    }
+}
+
+``` 
+
 Use @Autowireproxy when injecting objects into the UI layer.
 
 The @autowireproxy will inject a proxy object that will be executed **in the thread**.
