@@ -204,6 +204,8 @@ public class MainActivity extends PJAppCompatActivity implements IMemberView {
 ``` 
 
 ### net module ###
+Default POST violation,Request body JSON format.The underlying layer is the HttpURLConnection implementation.
+
 ```java
 
 @Net(api = "http://www.baidu.com", connectTimeOut = 10000)
