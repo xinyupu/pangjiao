@@ -72,7 +72,7 @@ public abstract class PJFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         for (IPresenter presenter : presenters) {
-            presenter.build(this);
+            presenter.onDestroy();
         }
         DataBus.getDefault().destroy(this);
     }

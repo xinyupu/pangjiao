@@ -11,7 +11,7 @@ import com.pxy.pangjiao.mvp.viewmodel.views.PJFragment;
 
 public class TESTFragment extends PJFragment {
 
-    @InitView(id = R.id.btn_test)
+    @InitView(R.id.btn_test)
     public Button btnTest;
 
 

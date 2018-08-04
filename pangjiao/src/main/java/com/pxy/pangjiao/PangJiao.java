@@ -5,7 +5,8 @@ import android.app.Application;
 import android.view.View;
 
 import com.pxy.pangjiao.db.sql.PJDB;
-import com.pxy.pangjiao.log.IPLog;
+import com.pxy.pangjiao.logger.IPLog;
+import com.pxy.pangjiao.logger.Logger;
 import com.pxy.pangjiao.mvp.MVPCore;
 import com.pxy.pangjiao.mvp.ThreadPoolDefaultConfig;
 import com.pxy.pangjiao.mvp.ioccontainer.IContainerConfig;
@@ -57,7 +58,7 @@ public class PangJiao {
         return MVPCore.getInstance();
     }
 
-    public static void init(Application application, ThreadPoolDefaultConfig poolDefaultConfig, NetDefaultConfig config) {
+    public static MVPCore init(Application application, ThreadPoolDefaultConfig poolDefaultConfig, NetDefaultConfig config) {
         try {
             String className = "com.pxy.pangjiao.mvp.MVPDefaultContainer";
             Class<?> aClass = Class.forName(className);
@@ -73,9 +74,10 @@ public class PangJiao {
         } catch (InvocationTargetException e) {
             e.printStackTrace();
         }
+        return MVPCore.getInstance();
     }
 
-    public static void init(Application application, IContainerConfig config, ThreadPoolDefaultConfig poolDefaultConfig, NetDefaultConfig netConfig) {
+    public static MVPCore init(Application application, IContainerConfig config, ThreadPoolDefaultConfig poolDefaultConfig, NetDefaultConfig netConfig) {
         try {
             MVPCore.createInstance(application, poolDefaultConfig).initContainer(config);
             NetCore.init(netConfig);
@@ -87,6 +89,7 @@ public class PangJiao {
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
+        return MVPCore.getInstance();
     }
 
 
@@ -103,15 +106,11 @@ public class PangJiao {
     }
 
     public static void info(String msg) {
-        MVPCore.getInstance().log.info("", msg);
+        Logger.info("", msg);
     }
 
     public static void error(String msg) {
-        MVPCore.getInstance().log.error("", msg);
-    }
-
-    public static void setLog(IPLog log) {
-        MVPCore.getInstance().setLog(log);
+        Logger.e("", msg);
     }
 
 

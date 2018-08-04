@@ -2,6 +2,7 @@ package pxy.com.application.imp;
 
 import com.pxy.pangjiao.compiler.mpv.annotation.Autowire;
 import com.pxy.pangjiao.compiler.mpv.annotation.Presenter;
+import com.pxy.pangjiao.compiler.mpv.annotation.TargetView;
 
 import pxy.com.adapter.protocol.RequestActive;
 import pxy.com.adapter.protocol.ResponseActive;
@@ -23,7 +24,8 @@ public class TourisstV2Service implements ITouristService {
     @Autowire(imp = AppService.class)
     public IAppService appService;
 
-    private IMainActivityView view;
+    @TargetView
+    public IMainActivityView view;
 
     @Override
     public void payCash(double money) {
@@ -32,16 +34,10 @@ public class TourisstV2Service implements ITouristService {
     }
 
     @Override
-    public void active(User user) {
-        RequestActive active=new RequestActive();
-        active.setActiveCode("123456");
-        ResponseActive response = active.execute();
+    public void active(String code) {
+
     }
 
-    @Override
-    public void build(Object view) {
-        this.view= (IMainActivityView) view;
-    }
 
     @Override
     public void onDestroy() {

@@ -1,6 +1,8 @@
 package com.pxy.pangjiao.compiler.injectview.factory;
 
 
+import android.view.View;
+
 import com.pxy.pangjiao.compiler.Type;
 import com.pxy.pangjiao.compiler.injectview.annotation.InitViewField;
 import com.pxy.pangjiao.compiler.injectview.annotation.OnclickMethod;
@@ -17,6 +19,8 @@ import java.util.ArrayList;
 
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.TypeParameterElement;
+import javax.lang.model.element.VariableElement;
 import javax.lang.model.util.Elements;
 
 /**
@@ -62,6 +66,7 @@ public class InitViewProduct {
         }
 
         for (OnclickMethod method : mMethods) {
+            // VariableElement
             if (method.getAnnotationType() == AnnotationType.Method) {
                 TypeSpec listener = TypeSpec.anonymousClassBuilder("").addSuperinterface(Type.ANDROID_ON_CLICK_LISTENER)
                         .addMethod(MethodSpec.methodBuilder("onClick")
@@ -69,7 +74,7 @@ public class InitViewProduct {
                                 .addModifiers(Modifier.PUBLIC)
                                 .returns(TypeName.VOID)
                                 .addParameter(Type.ANDROID_VIEW, "view")
-                                .addStatement("host.$N()", method.getMethodName()).build()).build();
+                                .addStatement("host.$N(view)", method.getMethodName()).build()).build();
 
                 //     injectMethod.addStatement("listener = $L", listener);
                 for (int id : method.getResIds()) {

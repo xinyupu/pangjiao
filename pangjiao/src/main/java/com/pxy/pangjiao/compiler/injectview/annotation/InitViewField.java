@@ -23,7 +23,7 @@ public class InitViewField {
         mVariableElement = (VariableElement) element;
 
         InitView bindView = mVariableElement.getAnnotation(InitView.class);
-        id = bindView.id();
+        id = bindView.value();
         if (id < 0) {
             throw new IllegalArgumentException(
                     String.format("value() in %s for field %s is not valid !", InitView.class.getSimpleName(),

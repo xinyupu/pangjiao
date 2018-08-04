@@ -15,11 +15,11 @@ public class NetHelper {
     public static final String POST = "POST";
 
     public static Configs parse(Object o) {
-        if (!o.getClass().isAnnotationPresent(PNet.class))
+        if (!o.getClass().isAnnotationPresent(Net.class))
             throw new RuntimeException(o.getClass().getName() + " must @PNet.class");
         if (!NetModel.class.isAssignableFrom(o.getClass()))
             throw new RuntimeException(o.getClass().getName() + " must extends NetModel.class");
-        PNet annotation = o.getClass().getAnnotation(PNet.class);
+        Net annotation = o.getClass().getAnnotation(Net.class);
 
         String method = annotation.method();
         String api = annotation.api();

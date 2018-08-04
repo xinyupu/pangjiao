@@ -4,6 +4,7 @@ import android.accounts.NetworkErrorException;
 
 import com.pxy.pangjiao.common.ExpUtil;
 import com.pxy.pangjiao.PangJiao;
+import com.pxy.pangjiao.logger.Logger;
 import com.pxy.pangjiao.mvp.MVPCore;
 
 import java.io.BufferedReader;
@@ -16,8 +17,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -30,33 +29,18 @@ import java.util.Map;
 public class HttpEngine {
 
 
-    public static String post(String url, String content, NetDefaultConfig config) {
+    public static Response post(String url, String content, NetDefaultConfig config) {
         HttpURLConnection conn = null;
-        PangJiao.info("请求--POST:API:" + url + "\r\n" + content);
-        URL mURL = null;
+        Logger.d("PNet", "请求--POST:API:" + url + "\r\n" + content);
+        URL mURL;
         try {
             mURL = new URL(url);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-            PangJiao.error("" + e);
-        }
-        try {
             conn = (HttpURLConnection) mURL.openConnection();
-        } catch (IOException e) {
-            e.printStackTrace();
-            PangJiao.error(ExpUtil.getStackTrace(e));
-        }
-        try {
             conn.setRequestMethod("POST");// 设置请求方法为post
-        } catch (ProtocolException e) {
-            e.printStackTrace();
-            PangJiao.error(ExpUtil.getStackTrace(e));
-        }
-        conn.setConnectTimeout(config.getGlobeConnectTimeOut());// 设置连接网络超时为10秒
-        conn.setReadTimeout(config.getGlobeReadTimeOut());// 设置读取超时为5秒
-        conn.setDoOutput(true);// 设置此方法,允许向服务器输出内容
-        conn.setRequestProperty("Content-Type", "application/json");
-        try {
+            conn.setConnectTimeout(config.getGlobeConnectTimeOut());// 设置连接网络超时为10秒
+            conn.setReadTimeout(config.getGlobeReadTimeOut());// 设置读取超时为5秒
+            conn.setDoOutput(true);// 设置此方法,允许向服务器输出内容
+            conn.setRequestProperty("Content-Type", "application/json");
             conn.connect();
             OutputStream out = conn.getOutputStream();  // 获得一个输出流,向服务器写数据
             out.write(content.getBytes());
@@ -67,36 +51,34 @@ public class HttpEngine {
                 InputStream is = conn.getInputStream();
                 String response = getStringFromInputStream(is);
                 PangJiao.info("回复--POST:" + response);
-                return response;
+                Response request = new Response();
+                request.isSuccess = true;
+                request.data = response;
+                return request;
             } else {
                 throw new NetworkErrorException("response status is " + responseCode);
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             MVPCore.getInstance().postMain(() -> {
                 if (NetCore.getHttpManger().getListener() != null) {
                     NetCore.getHttpManger().getListener().onError(e);
                 }
             });
-            PangJiao.error(ExpUtil.getStackTrace(e));
-        } catch (NetworkErrorException e) {
-            e.printStackTrace();
-            MVPCore.getInstance().postMain(() -> {
-                if (NetCore.getHttpManger().getListener() != null) {
-                    NetCore.getHttpManger().getListener().onError(e);
-                }
-            });
-            PangJiao.error(ExpUtil.getStackTrace(e));
+            Logger.e("PNet", ExpUtil.getStackTrace(e));
+            Response request = new Response();
+            request.isSuccess = false;
+            request.data = ExpUtil.getStackTrace(e);
+            return request;
         } finally {
             conn.disconnect();// 关闭连接
         }
-        return null;
     }
 
     public static String get(String url, NetDefaultConfig config) {
         HttpURLConnection conn = null;
         try {
-            PangJiao.info("请求--GET:API" + url);
+            Logger.d("PNet:", "请求--GET:API" + url);
             URL mURL = new URL(url);
             conn = (HttpURLConnection) mURL.openConnection();
 
@@ -109,7 +91,7 @@ public class HttpEngine {
             if (responseCode == 200) {
                 InputStream is = conn.getInputStream();
                 String response = getStringFromInputStream(is);
-                PangJiao.info("回复--GET:" + response);
+                Logger.d("PNet:", "回复--GET:" + response);
                 return response;
             } else {
                 throw new NetworkErrorException("response status is " + responseCode);
@@ -206,5 +188,26 @@ public class HttpEngine {
         String state = os.toString();// 把流中的数据转换成字符串,采用的编码是utf-8
         os.close();
         return state;
+    }
+
+    public static class Response {
+        private boolean isSuccess;
+        private String data;
+
+        public boolean isSuccess() {
+            return isSuccess;
+        }
+
+        public void setSuccess(boolean success) {
+            isSuccess = success;
+        }
+
+        public String getData() {
+            return data;
+        }
+
+        public void setData(String data) {
+            this.data = data;
+        }
     }
 }

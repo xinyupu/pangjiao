@@ -11,5 +11,6 @@ import pxy.com.test.User;
 public interface ITouristService extends IPresenter {
 
     void payCash(double money);
-    void active(User user);
+
+    void active(String code);
 }

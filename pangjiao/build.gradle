@@ -54,7 +54,7 @@ def libName = "pangjiao"
 //发布到组织名称名字，必须填写
 group = "ljk.android.pangjiao"
 // 版本号，下次更新是只需要更改版本号即可
-version = "1.0.0"
+version = "1.0.1"
 //上面配置后上传至JCenter后的编译路径是这样的： compile 'ljk.android.pangjiao:library:1.0.0'
 
 //生成源文件
@@ -90,7 +90,7 @@ artifacts {
 // 配置maven库，生成POM.xml文件
 install {
     repositories.mavenInstaller {
-        // This generates POM.xml with proper parameters
+        // This generates POM.logXml with proper parameters
         pom {
             project {
                 packaging 'aar'

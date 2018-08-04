@@ -1,7 +1,11 @@
 package com.pxy.pangjiao.compiler.injectview.annotation;
 
 
+import android.util.Log;
+import android.view.View;
+
 import com.pxy.pangjiao.compiler.mpv.config.AnnotationType;
+import com.squareup.javapoet.ClassName;
 
 import java.util.List;
 
@@ -9,7 +13,9 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Name;
+import javax.lang.model.element.TypeParameterElement;
 import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 
 /**
@@ -37,11 +43,10 @@ public class OnclickMethod {
             resIds = executableElement.getAnnotation(OnClick.class).value();
             mMethodName = executableElement.getSimpleName();
             List<? extends VariableElement> parameters = executableElement.getParameters();
-
-            if (parameters.size() > 0) {
-                throw new IllegalArgumentException(
-                        String.format("The method annotated with @%s must have no parameters",
-                                OnClick.class.getSimpleName()));
+            if (parameters.size() != 1)
+                throw new IllegalArgumentException("There must be and only one parameter");
+            if (!parameters.get(0).asType().toString().equals("android.view.View")) {
+                throw new IllegalArgumentException("The argument to the method must be a view");
             }
         } else {
             variableElement = (VariableElement) element;
@@ -91,6 +96,10 @@ public class OnclickMethod {
 
     public AnnotationType getAnnotationType() {
         return annotationType;
+    }
+
+    public List<? extends VariableElement> getParameter() {
+        return executableElement.getParameters();
     }
 
 }

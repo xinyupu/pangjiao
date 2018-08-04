@@ -1,14 +1,14 @@
 package pxy.com.adapter.protocol;
 
 import com.pxy.pangjiao.net.NetModel;
-import com.pxy.pangjiao.net.helper.PNet;
+import com.pxy.pangjiao.net.helper.Net;
 
 /**
  * Created by Administrator on 2018/3/29.
  */
 
-@PNet(api = "http://jtc.damuzhikj.com/Api/Car/Active")
-public class RequestActive extends NetModel<ResponseActive>{
+@Net(api = "http://jtc.damuzhikj.com", connectTimeOut = 10000)
+public class RequestActive extends NetModel<ResponseActive> {
 
     private String ActiveCode;
 

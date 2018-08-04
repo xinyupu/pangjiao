@@ -65,7 +65,7 @@ public abstract class PJSupportFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         for (IPresenter presenter : presenters) {
-            presenter.build(this);
+            presenter.onDestroy();
         }
         DataBus.getDefault().destroy(this);
     }

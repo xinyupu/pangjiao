@@ -1,15 +1,29 @@
 package pxy.com.model;
 
-import com.pxy.pangjiao.compiler.mpv.annotation.ViewData;
-import com.pxy.pangjiao.mvp.viewmodel.model.ViewDatas;
-
-import pxy.com.test.MainActivity;
 
 /**
  * Created by Administrator on 2018/3/26.
  */
 
 
-public class UserView     {
+public class UserView {
 
+    private String name;
+    private String phone;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
 }

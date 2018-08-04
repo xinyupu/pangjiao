@@ -8,7 +8,9 @@ import java.lang.annotation.Target;
 /**
  * Created by pxy on 2018/3/14.
  */
-
+/*
+ * 自动注入代理对象，需使用在UI层
+ * */
 @Retention(RetentionPolicy.CLASS)
 @Target(ElementType.FIELD)
 public @interface AutowireProxy {

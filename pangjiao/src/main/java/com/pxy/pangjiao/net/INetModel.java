@@ -5,5 +5,5 @@ package com.pxy.pangjiao.net;
  */
 
 public interface INetModel<T> {
-    T execute();
+    T execute() throws InstantiationException, IllegalAccessException;
 }

@@ -28,20 +28,20 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-    dataBinding{
+    dataBinding {
         enabled true
     }
 }
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-
     implementation 'com.android.support:appcompat-v7:26.1.0'
     compile 'com.google.code.gson:gson:2.8.2'
-
-  // implementation 'com.github.xinyupu:pangjiao:1.1.30'
-    // annotationProcessor 'com.github.xinyupu.pangjiao:pangjiao:1.1.30'
-
+    // implementation 'com.github.xinyupu:pangjiao:1.1.30'
+    //annotationProcessor 'com.github.xinyupu.pangjiao:pangjiao:1.1.30'
+    // compile 'ljk.android.pangjiao:pangjiao:1.0.1'
+    //annotationProcessor 'ljk.android.pangjiao:pangjiao:1.0.1'
+    // implementation project(':pangjiao')
+    //annotationProcessor project(':pangjiao')
     implementation project(':pangjiao')
-    annotationProcessor project(':pangjiao')
 }

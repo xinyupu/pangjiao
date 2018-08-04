@@ -1,4 +1,4 @@
-package com.pxy.pangjiao.log;
+package com.pxy.pangjiao.logger;
 
 /**
  * Created by pxy on 2018/2/8.

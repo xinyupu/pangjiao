@@ -9,6 +9,7 @@ import com.pxy.pangjiao.compiler.mpv.MvpCompiler;
 import com.pxy.pangjiao.compiler.mpv.annotation.Autowire;
 import com.pxy.pangjiao.compiler.mpv.annotation.Presenter;
 import com.pxy.pangjiao.compiler.mpv.annotation.Service;
+import com.pxy.pangjiao.compiler.mpv.annotation.TargetView;
 import com.pxy.pangjiao.compiler.mpv.annotation.Views;
 import com.pxy.pangjiao.compiler.mpv.factory.AutoWireInjectProduct;
 import com.pxy.pangjiao.compiler.mpv.factory.MVPDefaultContainerProduct;
@@ -97,6 +98,7 @@ public class CoreProcessor extends AbstractProcessor {
         types.add(Presenter.class.getCanonicalName());
         types.add(Autowire.class.getCanonicalName());
         types.add(DataEvent.class.getCanonicalName());
+        types.add(TargetView.class.getCanonicalName());
         return types;
     }
 

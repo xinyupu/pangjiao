@@ -38,7 +38,6 @@ public class NetCore {
 
     private NetCore(NetDefaultConfig config) {
         this.config = config;
-
     }
 
     public static NetCore getHttpManger() {
@@ -57,21 +56,21 @@ public class NetCore {
         }
         if (parse.getMethod().equals("POST")) {
             String content = NetHelper.parseRequestContent(NetHelper.POST, t);
-            String response;
-            if (this.config.getGlobeConnectTimeOut() != connectTimeOut) {
+            HttpEngine.Response response;
+            if (this.config.getGlobeConnectTimeOut() != connectTimeOut && this.config.getGlobeReadTimeOut() != readTimeOut) {
                 NetDefaultConfig mConfig = new NetDefaultConfig();
                 mConfig.setGlobeConnectTimeOut(connectTimeOut);
-                mConfig.setGlobeReadTimeOut(config.getGlobeReadTimeOut());
+                mConfig.setGlobeReadTimeOut(readTimeOut);
                 response = HttpEngine.post(url, content, mConfig);
             } else if (this.config.getGlobeReadTimeOut() != readTimeOut) {
                 NetDefaultConfig mConfig = new NetDefaultConfig();
                 mConfig.setGlobeConnectTimeOut(config.getGlobeConnectTimeOut());
                 mConfig.setGlobeReadTimeOut(readTimeOut);
                 response = HttpEngine.post(url, content, mConfig);
-            } else if (this.config.getGlobeConnectTimeOut() != connectTimeOut && this.config.getGlobeReadTimeOut() != readTimeOut) {
+            } else if (this.config.getGlobeConnectTimeOut() != connectTimeOut) {
                 NetDefaultConfig mConfig = new NetDefaultConfig();
                 mConfig.setGlobeConnectTimeOut(connectTimeOut);
-                mConfig.setGlobeReadTimeOut(readTimeOut);
+                mConfig.setGlobeReadTimeOut(config.getGlobeReadTimeOut());
                 response = HttpEngine.post(url, content, mConfig);
             } else {
                 response = HttpEngine.post(url, content, config);
@@ -79,26 +78,42 @@ public class NetCore {
             Type genericSuperclass = t.getClass().getGenericSuperclass();
             if (genericSuperclass instanceof ParameterizedType) {
                 ParameterizedType parameterizedType = (ParameterizedType) genericSuperclass;
-                Class<? extends Type> aClass = (Class<? extends Type>) parameterizedType.getActualTypeArguments()[0];
-                return (V) new Gson().fromJson(response, aClass);
+                Class<? extends ResponseBase> aClass = (Class<? extends ResponseBase>) parameterizedType.getActualTypeArguments()[0];
+                if (response.isSuccess()) {
+                    ResponseBase responseBase = new Gson().fromJson(response.getData(), aClass);
+                    responseBase.isConnectSuccess = true;
+                    return (V) responseBase;
+                } else {
+                    ResponseBase responseBase = null;
+                    try {
+                        responseBase = aClass.newInstance();
+                    } catch (InstantiationException e) {
+                        e.printStackTrace();
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
+                    }
+                    responseBase.isConnectSuccess = false;
+                    responseBase.exception = response.getData();
+                    return (V) responseBase;
+                }
             }
         } else if (parse.getMethod().equals("GET")) {
             String content = NetHelper.parseRequestContent(NetHelper.GET, t);
             String response;
-            if (this.config.getGlobeConnectTimeOut() != connectTimeOut) {
+            if (this.config.getGlobeConnectTimeOut() != connectTimeOut && this.config.getGlobeReadTimeOut() != readTimeOut) {
                 NetDefaultConfig mConfig = new NetDefaultConfig();
                 mConfig.setGlobeConnectTimeOut(connectTimeOut);
-                mConfig.setGlobeReadTimeOut(config.getGlobeReadTimeOut());
+                mConfig.setGlobeReadTimeOut(readTimeOut);
                 response = HttpEngine.get(url + content, mConfig);
             } else if (this.config.getGlobeReadTimeOut() != readTimeOut) {
                 NetDefaultConfig mConfig = new NetDefaultConfig();
                 mConfig.setGlobeConnectTimeOut(config.getGlobeConnectTimeOut());
                 mConfig.setGlobeReadTimeOut(readTimeOut);
                 response = HttpEngine.get(url + content, mConfig);
-            } else if (this.config.getGlobeConnectTimeOut() != connectTimeOut && this.config.getGlobeReadTimeOut() != readTimeOut) {
+            } else if (this.config.getGlobeConnectTimeOut() != connectTimeOut) {
                 NetDefaultConfig mConfig = new NetDefaultConfig();
                 mConfig.setGlobeConnectTimeOut(connectTimeOut);
-                mConfig.setGlobeReadTimeOut(readTimeOut);
+                mConfig.setGlobeReadTimeOut(config.getGlobeReadTimeOut());
                 response = HttpEngine.get(url + content, mConfig);
             } else {
                 response = HttpEngine.get(url + content, config);

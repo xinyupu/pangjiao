@@ -5,20 +5,44 @@
     android:layout_height="match_parent"
     tools:context="pxy.com.test.MainActivity">
 
-    <Button
-        android:id="@+id/request"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="请求" />
+        android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/tv_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        <Button
+            android:id="@+id/request"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="请求" />
+
+        <Button
+            android:id="@+id/notify"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/request"
+            android:text="通知栏" />
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="onClick测试" />
+
+        <TextView
+            android:id="@+id/tv_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="注解测试" />
+    </LinearLayout>
+
 
     <FrameLayout
         android:id="@+id/replace"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"></FrameLayout>
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true">
+
+    </FrameLayout>
 </RelativeLayout>
 

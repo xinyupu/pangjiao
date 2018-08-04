@@ -2,14 +2,14 @@ package pxy.com.adapter.protocol;
 
 import com.pxy.pangjiao.compiler.mpv.annotation.DataSource;
 import com.pxy.pangjiao.mvp.viewmodel.model.ModelField;
+import com.pxy.pangjiao.net.ResponseBase;
 
 /**
  * Created by Administrator on 2018/3/29.
  */
 
 @DataSource
-public class ResponseActive {
-
+public class ResponseActive extends ResponseBase {
 
 
     private boolean issuccess;

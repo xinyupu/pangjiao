@@ -5,8 +5,10 @@ import android.os.Handler;
 
 import com.pxy.pangjiao.PangJiao;
 import com.pxy.pangjiao.common.ExpUtil;
-import com.pxy.pangjiao.log.IPLog;
-import com.pxy.pangjiao.log.PLog;
+import com.pxy.pangjiao.compiler.mpv.annotation.TargetView;
+import com.pxy.pangjiao.logger.DiskLogStage;
+import com.pxy.pangjiao.logger.IPLog;
+import com.pxy.pangjiao.logger.Logger;
 import com.pxy.pangjiao.mvp.ThreadPool.ThreadPool;
 import com.pxy.pangjiao.mvp.ioccontainer.BeanConfig;
 import com.pxy.pangjiao.mvp.ioccontainer.IContainerConfig;
@@ -22,8 +24,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  * Created by Administrator on 2018/3/13.
@@ -33,20 +33,16 @@ public class MVPCore {
 
     private static MVPCore _instance;
     private Map<String, BeanConfig> beanContainer;
-    private Map<String, List> autoWireContainer;
-    private Map<String, List> autoWireProxyContainer;
     private Map<String, List> dataEventContainer;
     private Map<String, List> viewContainer;
     private IContainerConfig containerConfig;
-    private List<String> superClass;
-    public IPLog log;
     private Handler mainHandler;
     private long mainThreadId;
     private ILoading loading;
     private ThreadPool threadPool;
 
 
-    public static MVPCore createInstance(Application application,ThreadPoolDefaultConfig config) {
+    public static MVPCore createInstance(Application application, ThreadPoolDefaultConfig config) {
         if (_instance == null) {
             synchronized (MVPCore.class) {
                 if (_instance == null) {
@@ -60,72 +56,81 @@ public class MVPCore {
 
     private MVPCore(ThreadPoolDefaultConfig config) {
         beanContainer = new HashMap<>();
-        superClass = new ArrayList<>();
-        autoWireProxyContainer = new HashMap<>();
         dataEventContainer = new HashMap<>();
-        this.log = new PLog();
         mainThreadId = Thread.currentThread().getId();
         mainHandler = new Handler();
-        threadPool=ThreadPool.getInstance(config);
+        threadPool = ThreadPool.getInstance(config);
     }
 
     public void initContainer(IContainerConfig config) throws ClassNotFoundException, NoSuchFieldException, IllegalAccessException {
         this.containerConfig = config;
         this.beanContainer = this.containerConfig.getClassTypeContainer();
-        this.viewContainer=this.containerConfig.getViewContainer();
-        this.dataEventContainer=this.containerConfig.getDataEvnetContainer();
+        this.viewContainer = this.containerConfig.getViewContainer();
+        this.dataEventContainer = this.containerConfig.getDataEvnetContainer();
     }
-
-
 
 
     public void autoWireProxy(Object o) throws ClassNotFoundException, NoSuchFieldException, IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
         List<ViewConfig> list = this.viewContainer.get(o.getClass().getName());
-        if (list!=null){
-            for (ViewConfig config:list){
+        if (list != null) {
+            for (ViewConfig config : list) {
                 Field field = o.getClass().getField(config.fieldName);
                 String impClassName = config.getImpClassName();
                 Class<?> imp = Class.forName(impClassName);
-                if (field!=null){
-                    if (field.getType().isAssignableFrom(imp)||field.getType()==imp){
+                if (field != null) {
+                    if (field.getType().isAssignableFrom(imp) || field.getType() == imp) {
                         BeanConfig beanConfig = this.beanContainer.get(impClassName);
-                        setProxy(o,beanConfig,config.getFieldName());
+                        setProxy(o, beanConfig, config.getFieldName());
                     }
                 }
             }
         }
     }
 
-    private void setProxy(Object o,BeanConfig beanConfig ,String fieldName) throws IllegalAccessException, InstantiationException, NoSuchFieldException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException {
+    private void setProxy(Object o, BeanConfig beanConfig, String fieldName) throws IllegalAccessException, InstantiationException, NoSuchFieldException, ClassNotFoundException, NoSuchMethodException, InvocationTargetException {
         Object proxy;
+        Object sourceObj = beanConfig.getObject();
+        Class aClass1 = sourceObj.getClass();
+        Field[] declaredFields = aClass1.getFields();
+        Field fieldView = null;
+        for (Field field : declaredFields) {
+            if (field.isAnnotationPresent(TargetView.class)) {
+                field.setAccessible(true);
+                fieldView = field;
+                break;
+            }
+        }
+        Object viewProxy = new ViewProxy().getProxy(o);
         if (beanConfig.isSingleton()) {
-            proxy = new PresentProxy().getProxy(beanConfig.getObject());
+            if (fieldView != null) {
+                fieldView.set(sourceObj, viewProxy);
+            }
+            proxy = new PresentProxy().getProxy(sourceObj);
         } else {
-            Object o1 = beanConfig.getObject().getClass().newInstance();
+            Object o1 = sourceObj.getClass().newInstance();
             autoWireNew(o1);
+            if (fieldView != null) {
+                fieldView.set(o1, viewProxy);
+            }
             proxy = new PresentProxy().getProxy(o1);
         }
         Field declaredField = o.getClass().getDeclaredField(fieldName);
         declaredField.setAccessible(true);
         declaredField.set(o, proxy);
-        Method build = proxy.getClass().getMethod("build", Object.class);
-        Object viewProxy = new ViewProxy().getProxy(o);
-        build.invoke(proxy, viewProxy);
-        try{
+        try {
             Field presenters = o.getClass().getField("presenters");
             if (presenters != null) {
                 Method add = presenters.getType().getMethod("add", Object.class);
                 add.invoke(presenters.get(o), proxy);
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
     }
 
     private void autoWireNew(Object o) throws ClassNotFoundException, NoSuchFieldException, IllegalAccessException {
-         this.containerConfig.autoWireFactory(o);
-
+        this.containerConfig.autoWireFactory(o);
     }
 
 
@@ -149,9 +154,10 @@ public class MVPCore {
         return loading;
     }
 
-    public void setLog(IPLog log) {
-        this.log = log;
+    public void initLogModule(int fileSize, String folder) {
+        Logger.builder().setDiskLogStage(new DiskLogStage(fileSize, folder)).build();
     }
+
 
     public Object parse(Object viewModel, Object view) {
         try {
@@ -184,6 +190,7 @@ public class MVPCore {
         }
     }
 
+
     public long getMainThreadId() {
         return mainThreadId;
     }
@@ -200,5 +207,9 @@ public class MVPCore {
 
     public ThreadPool getThreadPool() {
         return threadPool;
+    }
+
+    public Handler getMainHandler() {
+        return mainHandler;
     }
 }
