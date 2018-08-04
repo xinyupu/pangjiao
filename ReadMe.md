@@ -315,7 +315,9 @@ add,updata,query,delet
     }
     
 ```
-Not only are closed queries currently supported
+It is not just associative queries that are currently supported.
+
+
 
 
 
