@@ -268,6 +268,57 @@ xx.excute();//Thread synchronization
     }
     
 ```
+### Database ###
+
+Entity and @Entity, Public attribute,No encapsulation class
+```java
+
+@Entity
+public class User {
+
+    @Id
+    public int id;
+
+    @Column
+    public String userName;
+
+    @Column
+    public String telPhone;
+
+}
+
+```
+add,updata,query,delet
+```java
+
+  @Override
+    public void queryUser(String userName) {
+
+        //添加新的:user,更新同样的方法，确保Id不为0
+        User user = new User();
+        user.userName = userName;
+        user.telPhone = "1322222222";
+        SQEntity.save(user);
+        //查询：构建实体
+        User userQuery = new User();
+        userQuery.userName = userName;
+        List<User> search = SQEntity.search(User.class, userQuery);
+        //查询：where
+        List<User> search1 = SQEntity.search(User.class, "userName = '" + userName + " '");
+        //删除:构建实体
+        User userDelete = new User();
+        userDelete.telPhone = "1322222222";
+        SQEntity.deleteWhere(User.class, userDelete);
+        //删除:Id
+        SQEntity.delete(User.class, 2);
+
+    }
+    
+```
+Not only are closed queries currently supported
+
+
+
 
 Use @Autowireproxy when injecting objects into the UI layer.
 
