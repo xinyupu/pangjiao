@@ -61,12 +61,12 @@ dependencies {
         tvTitle.setText("hello ");
     }
 
-   @OnClick(R.id.tv_title)
+    @OnClick(R.id.tv_title)
     public void tvClick() {
         Toast.makeText(this, tvTitle.getText().toString(), Toast.LENGTH_SHORT).show();
     }
-
-	@OnClick(R.id.tv_title)
+    
+    @OnClick(R.id.tv_title)
     public View.OnClickListener tvTitle_Click=v -> {
         Toast.makeText(this, tvTitle.getText().toString(), Toast.LENGTH_SHORT).show();
     };
@@ -169,7 +169,7 @@ public class MemberPresent implements IMemberPresent {
 
     @Override
     public void login(String name, String pwd) {
-			appService.login(name, pwd);
+    	appService.login(name, pwd);
     }
 }
 ```
@@ -257,6 +257,7 @@ public class ResponseActive extends ResponseBase {
 ``` 
 
 how use?
+xx.excute();//Thread synchronization
 
 ```java
    
