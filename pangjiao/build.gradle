@@ -108,8 +108,8 @@ install {
                     developer {
                         //开发者的个人信息
                         id 'backkomyoung'
-                        name 'SongNing'
-                        email 'backkomyoung@gmail.com'
+                        name 'pxy'
+                        email '526966586@qq.com'
                     }
                 }
                 scm {
@@ -136,7 +136,7 @@ bintray {
         //发布到JCenter上的项目名字
         name = libName
         //项目描述
-        desc = 'A colorful circle view with text.'
+        desc = 'A MVP project.'
         websiteUrl = siteUrl
         vcsUrl = gitUrl
         licenses = ["Apache-2.0"]
