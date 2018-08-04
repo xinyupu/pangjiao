@@ -54,7 +54,7 @@ dependencies {
 ```java
  public class MainActivity extends PJAppCompatActivity  {
 
-    @InitView(id = R.id.tv_title)
+    @InitView(R.id.tv_title)
     public TextView tvTitle;
 
 
@@ -77,6 +77,13 @@ dependencies {
     public View.OnClickListener tvTitle_Click=v -> {
         Toast.makeText(this, tvTitle.getText().toString(), Toast.LENGTH_SHORT).show();
     };
+    
+    @OnClick({R.id.tv_title,R.id.tv_text})
+    public void onClick(View view){
+    
+    
+    }
+    
 
 ```
 Or
@@ -157,13 +164,10 @@ public class MemberPresent implements IMemberPresent {
     @Autowire
     public IAppService appService;
 
-    private IMemberView memberView;
+    @TargetView
+    public IMemberView memberView;
 
-    @Override
-    public void build(Object o) {
-        memberView = (IMemberView) o;
-    }
-
+   
     @Override
     public void onDestroy() {
         this.memberView = null;
