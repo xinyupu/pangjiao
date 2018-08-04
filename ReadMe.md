@@ -12,6 +12,7 @@ dependencies {
 	...
     compile 'ljk.android.pangjiao:pangjiao:1.0.2'
     annotationProcessor 'ljk.android.pangjiao:pangjiao:1.0.2'
+    }
 ```
 
 ```javascript
