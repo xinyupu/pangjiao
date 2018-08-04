@@ -3,23 +3,15 @@
 ### compile ###
 1.at project  `build.gradle`  add
 
-```javascript
-allprojects {
-    repositories {
-        ...
-        maven { url 'https://jitpack.io' }
-    }
-}
- ``` 
+
 
 2.at app `build.gradle`  add
 
 ```javascript
 dependencies {
 	...
-    compile 'com.github.xinyupu.pangjiao:pangjiao:1.1.2'
-    annotationProcessor 'com.github.xinyupu.pangjiao:pangjiao:1.1.2'
-}
+    compile 'ljk.android.pangjiao:pangjiao:1.0.2'
+    annotationProcessor 'ljk.android.pangjiao:pangjiao:1.0.2'
 ```
 
 ```javascript
