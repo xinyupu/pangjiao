@@ -254,6 +254,18 @@ public class ResponseActive extends ResponseBase {
 
 ``` 
 
+how use?
+
+```java
+   
+    public ResponseActive active(String activeCode) {
+        RequestActive requestActive = new RequestActive();
+        requestActive.setActiveCode(activeCode);
+        return requestActive.execute();
+    }
+    
+```
+
 Use @Autowireproxy when injecting objects into the UI layer.
 
 The @autowireproxy will inject a proxy object that will be executed **in the thread**.
