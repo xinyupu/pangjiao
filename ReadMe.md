@@ -91,7 +91,7 @@ Or
 
  public class TESTFragment extends PJFragment {
 
-    @InitView(id = R.id.btn_test)
+    @InitView(R.id.btn_test)
     public Button btnTest;
 
 
@@ -276,4 +276,5 @@ The @autowireproxy will inject a proxy object that will be executed **in the thr
 So the network requests in the UI tier Application layer do not need to start the threads themselves.
 
 The object that needs to be managed by the pangjiao container needs to be added to **@service** or **@Presenter**.
+Class that is decorated by **@service* or ** * @presenter **, do not have other member variables.
 
